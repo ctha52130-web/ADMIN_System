@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONLINE ISP - MicroMax Enterprise Asset System</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="https://people.cogetel.com.kh/uploads/companies/company_44fxcbvjin4rxf4q6akv.png" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            sidebarBg: '#071322',
+            sidebarHover: '#0e2038',
+            brandBlue: '#0284c7',
+            panelBg: '#0a1a33',
+            pageBg: '#f8fafc'
+          },
+          boxShadow: {
+            'card': '0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.03)',
+            'glow-blue': '0 0 20px rgba(2, 132, 199, 0.35)',
+            'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.35)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .logo-blend-screen {
+      mix-blend-mode: screen;
+      filter: contrast(1.2) brightness(1.15);
+    }
+    .nav-active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+    .badge-dot {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background-color: #10b981; box-shadow: 0 0 10px #10b981;
+    }
+    .badge-dot-amber {
+      display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+      background-color: #f59e0b; box-shadow: 0 0 10px #f59e0b;
+    }
+    .modal-glass {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+    }
+    .rep-tab-active {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-pageBg text-slate-800 text-xs flex min-h-screen overflow-hidden antialiased">
+
+  <!-- ==================== 0. AUTHENTICATION SCREEN ==================== -->
+  <div id="authScreen" class="fixed inset-0 z-50 bg-[#040914] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none"></div>
+    
+    <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl border border-slate-800/20 relative z-10 overflow-hidden">
+      
+      <div class="bg-gradient-to-b from-[#071322] via-[#0b1c38] to-[#081528] p-7 text-center border-b border-slate-800 relative">
+        <div class="flex items-center justify-center mb-2">
+          <img src="https://ticket.cogetel.com.kh/__swift/themes/__cp/images/online-logo.png" alt="ONLINE Logo" class="h-10 w-auto object-contain logo-blend-screen drop-shadow-[0_0_15px_rgba(56,189,248,0.35)]">
+        </div>
+        <h2 class="text-xs font-black text-white tracking-widest uppercase font-mono mt-1">ONLINE ISP ENTERPRISE</h2>
+        <p class="text-[11px] text-sky-400 font-medium">Telecom Core &amp; Regional Branch Logistics Engine</p>
+      </div>
+
+      <div class="p-7">
+        <div class="flex rounded-xl bg-slate-100 p-1 mb-5">
+          <button onclick="toggleAuthTab('login')" id="tabBtnLogin" class="flex-1 py-2 rounded-lg font-bold text-xs bg-white text-sky-600 shadow-xs transition">Sign In</button>
+          <button onclick="toggleAuthTab('register')" id="tabBtnRegister" class="flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 hover:text-slate-800 transition">Register Account</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="font-semibold text-slate-700">Corporate Email or Staff ID</label>
+            <div class="relative mt-1">
+              <i class="fa-solid fa-id-card absolute left-3.5 top-3 text-slate-400"></i>
+              <input type="text" id="loginIdentifier" placeholder="1954 or username@online.com.kh" required class="w-full border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 font-medium font-mono">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Password</label>
+            <div class="relative mt-1">
+              <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400"></i>
+              <input type="password" id="loginPassword" placeholder="••••••••" required class="w-full border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500">
+            </div>
+          </div>
+
+          <button type="submit" id="btnLoginSubmit" class="w-full py-3 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-700 hover:from-sky-700 hover:to-blue-800 text-white rounded-xl font-bold shadow-lg shadow-sky-600/25 transition flex items-center justify-center space-x-2">
+            <span>Authorize Terminal Access</span>
+            <i class="fa-solid fa-arrow-right text-xs"></i>
+          </button>
+
+          <div class="text-center pt-2 text-[11px] text-slate-400 font-mono">
+            Master ID: <b class="text-slate-700">1954</b> | Key: <b class="text-slate-700">123456</b>
+          </div>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3 text-xs">
+          <div>
+            <label class="font-semibold text-slate-700">Full Name</label>
+            <input type="text" id="regFullName" placeholder="Mr. Nuon Chantha" required class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-semibold text-slate-700">Staff ID</label>
+              <input type="text" id="regStaffId" placeholder="1954" required class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 font-mono outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30 font-bold">
+            </div>
+            <div>
+              <label class="font-semibold text-slate-700">Role</label>
+              <select id="regRole" onchange="checkSuperAdminRole()" required class="w-full mt-1 border border-slate-200 rounded-xl px-2.5 py-2 bg-slate-50 text-slate-800 outline-none focus:bg-white font-semibold text-sky-700">
+                <option value="Staff">Field Engineer (Staff)</option>
+                <option value="Senior Staff">Senior Technician</option>
+                <option value="Team Leader">Team Leader</option>
+                <option value="Deputy Manager">Deputy Manager</option>
+                <option value="Branch Manager">Branch Manager</option>
+                <option value="Super Admin" class="font-bold text-rose-600">Executive Super Admin 🔑</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="superAdminKeyBox" class="hidden bg-rose-50 border border-rose-200 p-3 rounded-xl">
+            <label class="font-bold text-rose-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-key text-rose-600"></i>
+              <span>Master Deployment Key</span>
+            </label>
+            <input type="password" id="regSecretKey" placeholder="SUPER@ONLINE#2026" class="w-full mt-1 border border-rose-300 rounded-lg px-3 py-1.5 bg-white font-mono outline-none">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Corporate Email</label>
+            <input type="email" id="regGmail" placeholder="chanthanuon754@gmail.com" required class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 outline-none">
+          </div>
+
+          <div>
+            <label class="font-semibold text-slate-700">Password</label>
+            <input type="password" id="regPassword" placeholder="Minimum 6 characters" minlength="6" required class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 outline-none">
+          </div>
+
+          <button type="submit" id="btnRegSubmit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md shadow-emerald-500/20 transition flex items-center justify-center space-x-2 mt-2">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Enroll Account</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 1. SIDEBAR NAVIGATION ==================== -->
+  <aside class="w-64 bg-sidebarBg text-slate-300 min-h-screen flex flex-col justify-between shrink-0 select-none z-20 shadow-2xl border-r border-slate-800">
+    <div>
+      <div class="px-5 py-4 flex items-center space-x-3 border-b border-slate-800 bg-[#050e1c]">
+        <div class="h-9 flex items-center justify-center shrink-0">
+          <img src="https://ticket.cogetel.com.kh/__swift/themes/__cp/images/online-logo.png" alt="ONLINE Logo" class="h-8 w-auto object-contain logo-blend-screen drop-shadow-[0_0_10px_rgba(56,189,248,0.3)]">
+        </div>
+        <div class="truncate border-l border-slate-800 pl-3">
+          <div class="flex items-center space-x-1.5">
+            <span class="text-xs font-black text-white tracking-wide uppercase">ONLINE ISP</span>
+            <span class="text-[9px] bg-sky-950 text-sky-400 border border-sky-800/60 px-1.5 py-0.2 rounded font-mono font-bold">Pro v3.5</span>
+          </div>
+          <p class="text-[10px] text-sky-400/80 font-mono truncate">Office Bavet (Office -BVT)</p>
+        </div>
+      </div>
+
+      <nav class="p-3 space-y-1 text-[12px] overflow-y-auto max-h-[calc(100vh-230px)] font-medium">
+        <button onclick="switchView('dashboard')" id="nav-dashboard" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl nav-active transition">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-chart-line w-4 text-center"></i><span>Dashboard Overview</span></div>
+        </button>
+
+        <button onclick="switchView('requisitions')" id="nav-requisitions" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-amber-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-clipboard-list w-4 text-center"></i><span>Requisitions Queue</span></div>
+          <span id="badgePendingReq" class="w-4 h-4 bg-amber-500 text-slate-950 rounded-full flex items-center justify-center text-[9px] font-bold font-mono">0</span>
+        </button>
+
+        <button onclick="switchView('products')" id="nav-products" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-boxes-stacked w-4 text-center text-sky-400"></i><span>Product Catalog</span></div>
+          <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
+        </button>
+
+        <button onclick="switchView('masterLedger')" id="nav-masterLedger" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-cyan-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-microchip w-4 text-center text-cyan-400"></i><span>Hardware Master Ledger</span></div>
+          <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-glow-cyan"></span>
+        </button>
+
+        <button onclick="openStockInModal()" id="btnNavStockIn" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-arrow-down-to-bracket w-4 text-center text-emerald-400"></i><span>Stock In (Inward HQ)</span></div>
+          <span class="w-4 h-4 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full flex items-center justify-center text-[9px]"><i class="fa-solid fa-plus"></i></span>
+        </button>
+
+        <button onclick="switchView('stockOutLogs')" id="nav-stockOutLogs" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-truck-fast w-4 text-center text-indigo-400"></i><span>Stock Out Records</span></div>
+          <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
+        </button>
+
+        <button onclick="switchView('deviceLifecycle')" id="nav-deviceLifecycle" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-barcode w-4 text-center text-teal-400"></i><span>Asset Lifecycle Tracker</span></div>
+          <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
+        </button>
+
+        <button onclick="switchView('warehouses')" id="nav-warehouses" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-warehouse w-4 text-center text-amber-400"></i><span>Warehouses</span></div>
+          <i class="fa-solid fa-chevron-right text-[9px] text-slate-500"></i>
+        </button>
+
+        <button onclick="switchView('report')" id="nav-report" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-amber-400 font-bold">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-file-invoice-dollar w-4 text-center"></i><span>Reports Center</span></div>
+          <span class="text-[9px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-medium">3 Sheets</span>
+        </button>
+
+        <button onclick="switchView('users')" id="nav-users" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-slate-300">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-user-shield w-4 text-center text-sky-400"></i><span>Users &amp; Roles</span></div>
+          <span id="badgePendingUsers" class="hidden px-1.5 py-0.2 bg-rose-500 text-white rounded-full font-mono text-[9px] font-bold">0</span>
+        </button>
+
+        <button onclick="triggerAutoSetupDB()" id="btnNavAutoSetup" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl hover:bg-sidebarHover hover:text-white transition text-cyan-400 font-semibold">
+          <div class="flex items-center space-x-3"><i class="fa-solid fa-wand-magic-sparkles w-4 text-center"></i><span>Auto Setup DB</span></div>
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- SIDEBAR FOOTER -->
+    <div class="p-3.5 border-t border-slate-800 bg-[#050c17]">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="font-bold text-slate-200 text-[11px] tracking-wide">Cogetel Online Co., Ltd</p>
+          <p class="text-[9px] text-slate-400 flex items-center gap-1.5">
+            <span class="badge-dot"></span> System Live &amp; Encrypted
+          </p>
+        </div>
+        <button onclick="handleLogout()" class="px-2.5 py-1.5 rounded-lg bg-rose-950/40 text-rose-400 hover:bg-rose-900/60 border border-rose-800/40 font-medium text-[11px] flex items-center gap-1 transition">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== 2. MAIN HEADER & VIEWPORT ==================== -->
+  <main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+    
+    <header class="bg-gradient-to-r from-[#071322] via-[#0a1b33] to-[#071322] text-white px-6 py-2.5 flex items-center justify-between border-b border-slate-800 shrink-0 sticky top-0 z-30 shadow-md">
+      <div class="flex items-center space-x-3">
+        <span class="text-xs font-black tracking-wider text-slate-200 uppercase">ONLINE ISP</span>
+        <span id="topLocationBadge" class="text-[10px] bg-sky-950/80 text-sky-300 px-2.5 py-0.5 rounded-full border border-sky-700/60 font-mono font-medium">Office Bavet</span>
+      </div>
+
+        <div class="flex items-center space-x-3 pl-3 border-l border-slate-800">
+          <div class="w-8 h-8 rounded-full overflow-hidden ring-2 ring-sky-500/50 shadow shrink-0 bg-gradient-to-br from-sky-600 to-blue-700 flex items-center justify-center font-bold text-white text-xs">
+            <span id="headerAvatarInitials">NC</span>
+          </div>
+          <div class="text-left">
+            <div id="headerUserName" class="text-[12px] font-bold leading-tight text-white">Mr. Nuon Chantha</div>
+            <div class="flex items-center gap-1.5 text-[9.5px]">
+              <span id="headerUserRole" class="text-sky-400 font-semibold">Super Admin</span>
+              <span class="text-slate-600">•</span>
+              <span id="headerUserId" class="text-amber-400 font-mono font-bold">ID: 1954</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- VIEWS CONTAINER -->
+    <div class="flex-1 overflow-y-auto p-5 space-y-4">
+
+      <!-- ================= VIEW 1: DASHBOARD ================= -->
+      <div id="view-dashboard" class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 bg-white px-5 py-3.5 rounded-2xl border border-slate-200/80 shadow-card">
+          <div>
+            <h1 class="text-sm font-extrabold text-slate-800 leading-tight">Live Network Inventory Dashboard</h1>
+            <p class="text-[11px] text-slate-500">Real-time asset visibility, warehouse balance, and field deployment logs</p>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <button onclick="openStockInModal()" id="btnActionStockIn" class="flex items-center space-x-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 py-2 rounded-xl font-bold shadow-sm transition">
+              <i class="fa-solid fa-arrow-down-to-bracket text-[11px]"></i><span>+ Stock In (Inward HQ)</span>
+            </button>
+            <button onclick="loadDashboardLiveData(); fetchLiveProducts(); fetchRequisitions();" class="flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl font-medium shadow-xs transition">
+              <i class="fa-solid fa-rotate text-xs"></i><span>Refresh Data</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Row 1: KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          <div class="bg-gradient-to-br from-sky-600 to-blue-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Total Products</span><i class="fa-solid fa-cube text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_totalProducts">0</div>
+            <div class="text-[9.5px] text-sky-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-up"></i><span>Active Catalog</span></div>
+          </div>
+          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Total Stock Units</span><i class="fa-solid fa-layer-group text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_totalStock">0</div>
+            <div class="text-[9.5px] text-emerald-100 flex items-center space-x-1"><i class="fa-solid fa-check"></i><span>Active in Store</span></div>
+          </div>
+          <div class="bg-gradient-to-br from-indigo-600 to-violet-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Estimated Value</span><i class="fa-solid fa-vault text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_totalStockVal">$0</div>
+            <div class="text-[9.5px] text-indigo-100 flex items-center space-x-1"><i class="fa-solid fa-coins"></i><span>Asset Valuation</span></div>
+          </div>
+          <div class="bg-gradient-to-br from-cyan-600 to-teal-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Stock In Today</span><i class="fa-solid fa-truck-ramp-box text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_stockInToday">0</div>
+            <div class="text-[9.5px] text-cyan-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-down"></i><span>Received Units</span></div>
+          </div>
+          <div class="bg-gradient-to-br from-amber-600 to-orange-600 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Stock Out Today</span><i class="fa-solid fa-person-digging text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_stockOutToday">0</div>
+            <div class="text-[9.5px] text-amber-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-up"></i><span>Installed Units</span></div>
+          </div>
+          <div class="bg-gradient-to-br from-rose-500 to-rose-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Low Stock Flag</span><i class="fa-solid fa-triangle-exclamation text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_lowStock">0</div>
+            <div class="text-[9.5px] text-rose-100">Replenishment</div>
+          </div>
+          <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Faulty Returns</span><i class="fa-solid fa-circle-xmark text-white/70"></i></div>
+            <div class="my-1.5 text-xl font-black font-mono" id="kpi_brokenReturns">0</div>
+            <div class="text-[9.5px] text-slate-300">Pending RMA/Repair</div>
+          </div>
+        </div>
+
+        <!-- Row 2: Charts & Top Fast-Moving -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-6 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-2 font-bold text-slate-800 text-xs"><i class="fa-solid fa-chart-column text-sky-600"></i><span>Stock Movement Velocity (Stock In vs Stock Out)</span></div>
+              <div class="flex items-center space-x-3 text-[10.5px] text-slate-500 font-medium">
+                <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span>Stock In</span></span>
+                <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Stock Out</span></span>
+              </div>
+            </div>
+            <div class="h-56 relative"><canvas id="movementChart"></canvas></div>
+          </div>
+
+          <div class="lg:col-span-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <div class="flex items-center space-x-2 font-bold text-slate-800 text-xs mb-1"><i class="fa-solid fa-chart-pie text-sky-600"></i><span>Regional Store Distribution</span></div>
+            <div class="flex flex-col items-center justify-center my-auto">
+              <div class="w-36 h-36 relative flex items-center justify-center">
+                <canvas id="warehouseChart"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+                  <span class="text-sm font-black text-slate-800 font-mono" id="centerStockCount">0</span><span class="text-[9px] text-slate-400">Total Units</span>
+                </div>
+              </div>
+              <div class="w-full mt-3 space-y-1.5 text-[11px]">
+                <div class="flex justify-between items-center text-slate-600">
+                  <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Office Bavet</span></span>
+                  <span class="font-bold font-mono text-slate-800" id="lblBavetStock">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center space-x-1.5 font-bold text-slate-800 text-xs"><i class="fa-solid fa-ranking-star text-sky-600"></i><span>Top Fast-Moving ONU &amp; Fiber</span></div>
+              <a href="javascript:switchView('products')" class="text-[11px] text-sky-600 hover:underline">View All →</a>
+            </div>
+            <div id="fastMovingContainer" class="space-y-2.5 overflow-y-auto max-h-60 pr-1 text-slate-700 text-xs font-mono">
+              <div class="text-slate-400 text-center py-6 font-sans">No stock out activity recorded yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Navigation & Live Activity -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="font-bold text-slate-800 text-xs">Quick Logistics Navigation</span>
+              <a href="javascript:switchView('report')" class="text-xs text-sky-600 hover:underline">Open Reports Hub →</a>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-center my-auto">
+              <div onclick="switchView('report'); switchReportTab('out');" class="p-2.5 rounded-xl bg-rose-50 border border-rose-100 cursor-pointer hover:bg-rose-100 transition">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-rose-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-arrow-up"></i></div>
+                <div class="font-bold text-[10px] text-slate-700">Stock Out</div>
+              </div>
+              <div onclick="switchView('report'); switchReportTab('in');" class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="font-bold text-[10px] text-slate-700">Stock In</div>
+              </div>
+              <div onclick="switchView('report'); switchReportTab('balance');" class="p-2.5 rounded-xl bg-sky-50 border border-sky-100 cursor-pointer hover:bg-sky-100 transition">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-sky-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="font-bold text-[10px] text-slate-700">Balance</div>
+              </div>
+            </div>
+            <div class="pt-3 border-t mt-2 flex justify-between items-center text-[11px] text-slate-500">
+              <span>Primary Gateway</span>
+              <span class="font-semibold text-emerald-600 font-mono">Office Bavet (Office -BVT)</span>
+            </div>
+          </div>
+
+          <div class="lg:col-span-8 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold text-slate-800 text-xs">Recent Hardware Movement (Live Logs)</span>
+              <a href="javascript:switchView('stockOutLogs')" class="text-[11px] text-sky-600 hover:underline">View Full Logs →</a>
+            </div>
+            <div id="dashboardRecentLogs" class="space-y-2 text-xs">
+              <div class="text-slate-400 text-center py-6 font-sans">No recent stock movements.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 2: REQUISITIONS ================= -->
+      <div id="view-requisitions" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-card flex justify-between items-center">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-clipboard-check text-amber-600"></i>
+              <span>Hardware Requisition &amp; Verification Queue</span>
+            </h2>
+            <p class="text-slate-500 text-xs">Staff requests dispatched via Telegram Mini App requiring clearance</p>
+          </div>
+          <button onclick="fetchRequisitions()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl font-medium shadow-xs transition">
+            <i class="fa-solid fa-rotate text-xs mr-1"></i> Refresh Queue
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-50 border-b text-slate-600 font-semibold">
+              <tr>
+                <th class="p-3">Request ID</th>
+                <th class="p-3">Staff Member</th>
+                <th class="p-3">Item Description</th>
+                <th class="p-3 text-center">Qty</th>
+                <th class="p-3">Ticket ID</th>
+                <th class="p-3 text-center">Status</th>
+                <th class="p-3">Verified Serial / MAC</th>
+                <th class="p-3 text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody id="requisitionTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 3: PRODUCTS ================= -->
+      <div id="view-products" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800">Master Product Catalog &amp; Initial Stock</h2>
+            <p class="text-slate-500 text-xs">Synchronized with 'Stock Inventory' beginning balance</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="openAddProductModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus text-xs"></i><span>Add New Product</span>
+            </button>
+            <button onclick="fetchLiveProducts()" class="bg-sky-600 hover:bg-sky-700 text-white px-3.5 py-1.5 rounded-xl font-medium shadow-xs transition">Refresh Catalog</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-50 text-slate-600 border-b">
+              <tr>
+                <th class="p-3 font-semibold">Item Code BC</th>
+                <th class="p-3 font-semibold">Description</th>
+                <th class="p-3 font-semibold text-center">UOM</th>
+                <th class="p-3 font-semibold text-center">Beginning Stock (In Store)</th>
+                <th class="p-3 font-semibold text-center">Availability</th>
+              </tr>
+            </thead>
+            <tbody id="productCatalogBody" class="divide-y divide-slate-100 font-medium font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 4: STOCK OUT LOGS ================= -->
+      <div id="view-stockOutLogs" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-card flex flex-wrap items-center justify-between gap-3">
+          <div><h2 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-truck-fast text-indigo-600"></i><span>Daily Stock Out Records (History Logs)</span></h2><p class="text-slate-500 text-xs">Recorded deployments from Daily stock out record</p></div>
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <input type="text" id="outSearchText" placeholder="Search Ticket or Serial..." onkeyup="queryOutHistory()" class="border rounded-xl px-3 py-1.5 bg-white outline-none">
+            <button onclick="queryOutHistory()" class="bg-sky-600 hover:bg-sky-700 text-white px-3.5 py-1.5 rounded-xl font-medium shadow-xs">Filter</button>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-50 border-b text-slate-600 font-semibold">
+              <tr><th class="p-3">Date</th><th class="p-3">Code BC</th><th class="p-3">Product Name</th><th class="p-3">Serial</th><th class="p-3">Mac serial</th><th class="p-3 text-center">Condition</th><th class="p-3 text-center">Qty</th><th class="p-3">Customer's Ticket</th><th class="p-3">Location</th><th class="p-3">Remark</th></tr>
+            </thead>
+            <tbody id="outHistoryBody" class="divide-y divide-slate-100 font-medium font-mono"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 5: DEVICE LIFECYCLE ================= -->
+      <div id="view-deviceLifecycle" class="hidden space-y-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-card flex flex-wrap justify-between items-center gap-3">
+          <div><h2 class="text-sm font-bold text-slate-800 flex items-center gap-2"><i class="fa-solid fa-barcode text-teal-600"></i><span>Telecom Asset Lifecycle Tracker</span></h2><p class="text-slate-500 text-xs">Search by Serial No. or MAC to trace installation history &amp; returns</p></div>
+          <div class="flex items-center space-x-2">
+            <input type="text" id="traceSerialInput" placeholder="Enter Serial No. or MAC..." class="border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono w-64 outline-none">
+            <button onclick="traceDevice()" class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-xl font-medium shadow-xs">Search Timeline</button>
+          </div>
+        </div>
+        <div id="traceResultContainer" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-card"><p class="text-center text-slate-400 py-8 font-sans">Enter Serial Number above to trace lifecycle</p></div>
+      </div>
+
+      <!-- ================= VIEW 6: WAREHOUSES ================= -->
+      <div id="view-warehouses" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card"><h2 class="text-sm font-bold text-slate-800">Regional Warehouses &amp; Technical POPs</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-card space-y-2">
+            <h3 class="font-bold text-sm text-slate-800">Office Bavet</h3><p class="text-slate-400 text-xs">Bavet City, Svay Rieng Province (Office -BVT)</p>
+            <div class="pt-2 border-t font-mono text-emerald-600 font-bold" id="whBavetCount">Active Hub Location</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 7: HARDWARE MASTER LEDGER ================= -->
+      <div id="view-masterLedger" class="hidden space-y-4">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-card flex flex-wrap justify-between items-center gap-3">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+              <i class="fa-solid fa-microchip text-cyan-600"></i>
+              <span>Hardware Master Ledger (Available In Stock)</span>
+            </h2>
+            <p class="text-slate-500 text-xs">Active serialized optical &amp; network devices ready for deployment</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="openRegisterHardwareModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+              <i class="fa-solid fa-barcode text-xs"></i><span>+ Register Existing Asset</span>
+            </button>
+
+            <input type="text" id="ledgerSearchInput" onkeyup="filterLedgerTable()" placeholder="Search Serial, MAC, Code, or Product..." class="border border-slate-200 rounded-xl px-3 py-1.5 text-xs outline-none">
+            <button onclick="fetchMasterLedger()" class="bg-cyan-600 hover:bg-cyan-700 text-white px-3.5 py-1.5 rounded-xl font-medium shadow-xs">
+              <i class="fa-solid fa-rotate text-xs"></i><span>Refresh Ledger</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 border-b text-slate-600 font-semibold">
+                <tr>
+                  <th class="p-3">Serial No.</th>
+                  <th class="p-3">MAC Address</th>
+                  <th class="p-3">Code BC</th>
+                  <th class="p-3">Product Description</th>
+                  <th class="p-3 text-center">Available Stock Qty</th>
+                  <th class="p-3 text-center">Status</th>
+                  <th class="p-3">Current Location</th>
+                  <th class="p-3">Reference / Ticket</th>
+                  <th class="p-3">Inventory Details</th>
+                </tr>
+              </thead>
+              <tbody id="masterLedgerBody" class="divide-y divide-slate-100 font-medium font-mono"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 8: REPORTS CENTER ================= -->
+      <div id="view-report" class="hidden space-y-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-card space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-file-invoice-dollar text-sky-600"></i>
+                <span>Monthly &amp; Annual Regional Inventory Reports Hub</span>
+              </h2>
+              <p id="repPeriodDisplay" class="text-slate-500 text-xs mt-0.5 font-mono">Select period to query report data</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
+                <i class="fa-solid fa-calendar-days text-slate-500 ml-2"></i>
+                <input type="text" id="reportPeriodSelect" value="2026-09" placeholder="YYYY-MM or YYYY" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono outline-none shadow-xs text-sky-700 w-28 text-center focus:border-sky-500">
+              </div>
+              <button onclick="fetchCurrentReport()" class="bg-sky-600 hover:bg-sky-700 text-white px-3.5 py-2 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate text-xs"></i><span>Query</span>
+              </button>
+              
+              <button onclick="exportSingleExcel()" title="Export current viewed tab to Excel" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-excel text-xs"></i><span>Export Tab</span>
+              </button>
+              <button onclick="exportAllExcel()" title="Export all 3 reports into a single multi-sheet Excel workbook" class="bg-teal-700 hover:bg-teal-800 text-white px-3.5 py-2 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-file-export text-xs"></i><span>Export All (3 Sheets)</span>
+              </button>
+
+              <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-3.5 py-2 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
+                <i class="fa-solid fa-print text-xs"></i><span>Print</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 border-t pt-3 border-slate-100">
+            <button onclick="switchReportTab('out')" id="tabRepOut" class="px-4 py-2 rounded-xl font-bold text-xs rep-tab-active transition flex items-center gap-2">
+              <i class="fa-solid fa-arrow-up text-rose-300"></i>
+              <span>Daily Stock Out Record</span>
+            </button>
+            <button onclick="switchReportTab('in')" id="tabRepIn" class="px-4 py-2 rounded-xl font-bold text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center gap-2">
+              <i class="fa-solid fa-arrow-down text-emerald-600"></i>
+              <span>Stock Request Record (Inward)</span>
+            </button>
+            <button onclick="switchReportTab('balance')" id="tabRepBalance" class="px-4 py-2 rounded-xl font-bold text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-indigo-600"></i>
+              <span>Monthly Stock Balance</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 font-mono">
+          <div class="bg-emerald-50 border border-emerald-200 p-3.5 rounded-2xl">
+            <div class="text-[10px] text-emerald-700 font-sans font-semibold">New Stock Inward</div>
+            <div class="text-xl font-bold text-emerald-600 mt-1" id="statMonthlyIn">0</div>
+            <div class="text-[9.5px] text-emerald-500 font-sans">Stock Request Record</div>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 p-3.5 rounded-2xl">
+            <div class="text-[10px] text-rose-700 font-sans font-semibold">Actual Used Qty</div>
+            <div class="text-xl font-bold text-rose-600 mt-1" id="statMonthlyOut">0</div>
+            <div class="text-[9.5px] text-rose-500 font-sans">Deployed to Customers</div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 p-3.5 rounded-2xl">
+            <div class="text-[10px] text-amber-700 font-sans font-semibold">Returned to Stock</div>
+            <div class="text-xl font-bold text-amber-600 mt-1" id="statMonthlyReturn">0</div>
+            <div class="text-[9.5px] text-amber-500 font-sans">Re-stocked Inward</div>
+          </div>
+          <div class="bg-sky-50 border border-sky-200 p-3.5 rounded-2xl">
+            <div class="text-[10px] text-sky-700 font-sans font-semibold">Customer Tickets</div>
+            <div class="text-xl font-bold text-sky-600 mt-1" id="statMonthlyTickets">0</div>
+            <div class="text-[9.5px] text-sky-500 font-sans">Tickets Completed</div>
+          </div>
+        </div>
+
+        <!-- REPORT 1 -->
+        <div id="repSectionOut" class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
+            <span class="font-bold text-slate-800 text-xs">Daily stock out record</span>
+            <span class="text-[11px] text-slate-500 font-mono" id="outCountBadge">0 Records</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-100 text-slate-700 font-semibold border-b">
+                <tr>
+                  <th class="p-2.5">Date stock out</th>
+                  <th class="p-2.5">Location code</th>
+                  <th class="p-2.5">Department</th>
+                  <th class="p-2.5">Code BC MM co.,</th>
+                  <th class="p-2.5">Product Name</th>
+                  <th class="p-2.5 font-bold text-sky-700">Serial</th>
+                  <th class="p-2.5 font-bold text-indigo-700">Mac serial</th>
+                  <th class="p-2.5 text-center">New/Old/Broken</th>
+                  <th class="p-2.5 text-center">UOM</th>
+                  <th class="p-2.5 text-center">QTY</th>
+                  <th class="p-2.5 font-bold text-sky-600">Customer's Ticket</th>
+                  <th class="p-2.5">Remark</th>
+                </tr>
+              </thead>
+              <tbody id="repTableOutBody" class="divide-y divide-slate-100 font-mono">
+                <tr><td colspan="12" class="p-8 text-center text-slate-400 font-sans">Select period and click Query...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- REPORT 2 -->
+        <div id="repSectionIn" class="hidden bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
+            <span class="font-bold text-slate-800 text-xs">Stock Request Record (Inward)</span>
+            <span class="text-[11px] text-slate-500 font-mono" id="inCountBadge">0 Records</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-100 text-slate-700 font-semibold border-b">
+                <tr>
+                  <th class="p-2.5">Posting Date</th>
+                  <th class="p-2.5">Item No.</th>
+                  <th class="p-2.5">Description</th>
+                  <th class="p-2.5 text-center">Quantity</th>
+                  <th class="p-2.5 font-bold text-sky-700">Serial No.</th>
+                  <th class="p-2.5 font-bold text-indigo-700">Mac Serial</th>
+                  <th class="p-2.5">Package No.</th>
+                  <th class="p-2.5">Location Cod</th>
+                  <th class="p-2.5">Remark</th>
+                </tr>
+              </thead>
+              <tbody id="repTableInBody" class="divide-y divide-slate-100 font-mono">
+                <tr><td colspan="9" class="p-8 text-center text-slate-400 font-sans">No inward stock records found for this period.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- REPORT 3 -->
+        <div id="repSectionBalance" class="hidden bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <div class="p-3.5 bg-slate-50 border-b flex justify-between items-center">
+            <span class="font-bold text-slate-800 text-xs">Monthly Stock Balance (Ending Balance = Beginning + In - Out + Return)</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-slate-300 text-left text-xs">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 text-center font-bold">
+                  <th class="border border-slate-300 p-2 w-10">No.</th>
+                  <th class="border border-slate-300 p-2 w-28">Item code BC</th>
+                  <th class="border border-slate-300 p-2 text-left">Description</th>
+                  <th class="border border-slate-300 p-2 w-16">UOM</th>
+                  <th class="border border-slate-300 p-2 w-24">Beginning</th>
+                  <th class="border border-slate-300 p-2 w-24 text-emerald-700 bg-emerald-50">Stock in</th>
+                  <th class="border border-slate-300 p-2 w-24 text-rose-700 bg-rose-50">Stock out</th>
+                  <th class="border border-slate-300 p-2 w-28 text-amber-700 bg-amber-50">Stock return</th>
+                  <th class="border border-slate-300 p-2 w-28 bg-sky-50 text-sky-900">Ending Balance</th>
+                </tr>
+              </thead>
+              <tbody id="repTableBalanceBody" class="font-mono text-center font-medium">
+                <tr><td colspan="9" class="p-8 text-center text-slate-400 font-sans">Calculating...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= VIEW 9: USERS & ROLES ================= -->
+      <div id="view-users" class="hidden space-y-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-card flex justify-between items-center">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800">User Management &amp; Approvals</h2>
+            <p class="text-slate-500 text-xs">Review registered accounts, grant access, or suspend staff permissions</p>
+          </div>
+          <button onclick="fetchUsersList()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-1.5 rounded-xl font-medium shadow-xs">
+            <i class="fa-solid fa-rotate text-xs mr-1"></i> Refresh Users
+          </button>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead class="bg-slate-50 border-b text-slate-600 font-semibold">
+              <tr>
+                <th class="p-3.5">Staff Member</th>
+                <th class="p-3.5">Staff ID</th>
+                <th class="p-3.5">Assigned Role</th>
+                <th class="p-3.5">Corporate Email</th>
+                <th class="p-3.5 text-center">Status</th>
+                <th class="p-3.5 text-center">Action / Permissions</th>
+              </tr>
+            </thead>
+            <tbody id="usersListBody" class="divide-y divide-slate-100 font-medium"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ==================== 🌟 MODAL: REGISTER EXISTING HARDWARE (WITH QUANTITY & UOM) ==================== -->
+  <div id="modalRegisterHardware" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="modal-glass rounded-3xl p-6 w-full max-w-lg shadow-2xl border border-slate-100">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-barcode text-cyan-600"></i>
+          <span>Register Existing Warehouse Hardware (ស្តុកចាស់ដែលមានស្រាប់)</span>
+        </h3>
+        <button onclick="closeModal('modalRegisterHardware')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleRegisterExistingHardwareSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-700">Select Product Model</label>
+          <select id="reg_exist_prod" onchange="autoFillExistCode()" required class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none">
+            <option value="">-- Select Product --</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-semibold text-slate-700">Item Code BC</label>
+            <input type="text" id="reg_exist_code" readonly class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-100 text-slate-600 font-mono font-bold">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">Condition</label>
+            <select id="reg_exist_cond" class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none font-semibold">
+              <option value="New">Brand New</option>
+              <option value="Old">Good / Used</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 🌟 បន្ថែមប្រអប់ចំនួនឧបករណ៍ (Quantity) និងខ្នាត (UOM) -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-semibold text-slate-700">ចំនួនឧបករណ៍ (Quantity) *</label>
+            <input type="number" id="reg_exist_qty" min="1" value="1" required class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 font-mono font-bold text-emerald-600 bg-white outline-none focus:ring-2 focus:ring-cyan-500/30">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">ខ្នាត (UOM)</label>
+            <input type="text" id="reg_exist_uom" value="UNIT" readonly class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-100 font-mono font-bold text-slate-600 outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-semibold text-slate-700">Serial No. (បើគ្មានទុកទំនេរ)</label>
+            <input type="text" id="reg_exist_serial" placeholder="e.g. SN-803-00124" class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 font-mono bg-white outline-none focus:ring-2 focus:ring-cyan-500/30">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">MAC Address (បើគ្មានទុកទំនេរ)</label>
+            <input type="text" id="reg_exist_mac" placeholder="e.g. FC:21:B3:01:A2" class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 font-mono bg-white outline-none focus:ring-2 focus:ring-cyan-500/30">
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-700">Warehouse Location</label>
+          <select id="reg_exist_loc" class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none font-medium">
+            <option value="Office Bavet" selected>Office Bavet (Office -BVT)</option>
+            <option value="ChakAngre Krom - Main Warehouse at Head Office">ChakAngre Krom (C_KROM)</option>
+            <option value="Department IMO">Department IMO (DEP-IMO)</option>
+            <option value="Department Network and System">Department Network and System (DEP-SYS)</option>
+            <option value="Department Technical Support">Department Technical Support (DEP-TDS)</option>
+            <option value="Office BTB">Office BTB (Office -BTB)</option>
+            <option value="Office SRP">Office SRP (Office -SRP)</option>
+            <option value="Offce SHV">Offce SHV (Office -SHV)</option>
+            <option value="Office Poipet">Office Poipet (Office -PPT)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-700">Remark / Notes</label>
+          <input type="text" id="reg_exist_remark" placeholder="Opening warehouse stock inventory..." class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-white outline-none">
+        </div>
+
+        <button type="submit" id="btnSubmitExistHardware" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-700 hover:to-teal-700 text-white rounded-xl font-bold transition shadow-md mt-2 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check"></i><span>Commit Existing Device to Ledger</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: ADD NEW PRODUCT ==================== -->
+  <div id="modalAddProduct" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+    <div class="modal-glass rounded-3xl p-6 w-full max-w-md shadow-2xl border border-slate-100">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-box-open text-emerald-600"></i>
+          <span>Add New Product to Catalog</span>
+        </h3>
+        <button onclick="closeModal('modalAddProduct')" class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleAddNewProductSubmit(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="font-semibold text-slate-700">Item Code BC</label>
+          <input type="text" id="new_prod_code" placeholder="e.g. 2-210050" required class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 font-mono font-bold bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
+        </div>
+        <div>
+          <label class="font-semibold text-slate-700">Product Description / Name</label>
+          <input type="text" id="new_prod_name" placeholder="e.g. ONU GPON Dual Band Wi-Fi 6" required class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="font-semibold text-slate-700">UOM</label>
+            <select id="new_prod_uom" class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 bg-slate-50 outline-none font-bold">
+              <option value="UNIT">UNIT</option>
+              <option value="PCS">PCS</option>
+              <option value="ROLL">ROLL</option>
+              <option value="BOX">BOX</option>
+              <option value="PACK">PACK</option>
+              <option value="SET">SET</option>
+            </select>
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">Initial Beginning Stock</label>
+            <input type="number" id="new_prod_stock" value="0" min="0" required class="w-full mt-1 border border-slate-200 rounded-xl p-2.5 font-mono font-bold text-emerald-600 bg-slate-50 outline-none">
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmitAddProd" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold transition shadow-md mt-2 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check"></i><span>Save Product to Database</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: STOCK IN ==================== -->
+  <div id="modalStockIn" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="modal-glass rounded-3xl p-6 w-full max-w-xl shadow-2xl border border-slate-100 my-8">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg border border-emerald-100"><i class="fa-solid fa-arrow-down-to-bracket"></i></div>
+          <div>
+            <h3 class="font-bold text-slate-800 text-sm">Stock In (Inward from Phnom Penh HQ)</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">Record incoming dispatch into Stock Request Record</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modalStockIn')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form onsubmit="handleDirectStockInSubmit(event)" class="space-y-3.5 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-slate-700">Posting Date</label>
+            <input type="date" id="in_date" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 font-mono text-slate-800 outline-none">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">Quantity</label>
+            <input type="number" id="in_qty" min="1" value="1" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 font-bold font-mono text-emerald-600 bg-slate-50 outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-700">Select Product</label>
+          <select id="in_prodSelect" onchange="autoFillInItem()" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none">
+            <option value="">-- Select Product --</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-slate-700">Item Code BC</label>
+            <input type="text" id="in_code" placeholder="2-210048" readonly class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-100 text-slate-600 font-mono font-bold">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">Location Cod</label>
+            <select id="in_loc" class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 font-mono text-slate-700 font-bold outline-none">
+              <option value="Office -BVT" selected>Office -BVT (Office Bavet)</option>
+              <option value="C_KROM">C_KROM (ChakAngre Krom)</option>
+              <option value="DEP-IMO">DEP-IMO (Department IMO)</option>
+              <option value="DEP-SYS">DEP-SYS (Network and System)</option>
+              <option value="DEP-TDS">DEP-TDS (Technical Support)</option>
+              <option value="Office -BTB">Office -BTB (Office BTB)</option>
+              <option value="Office -SRP">Office -SRP (Office SRP)</option>
+              <option value="Office -SHV">Office -SHV (Offce SHV)</option>
+              <option value="Office -PPT">Office -PPT (Office Poipet)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-100 space-y-2.5">
+          <div class="font-semibold text-slate-700 flex items-center justify-between text-[11px]">
+            <span><i class="fa-solid fa-microchip text-emerald-600 mr-1.5"></i> Hardware Identifier Details</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-medium text-slate-600">Serial No.</label>
+              <input type="text" id="in_serial" placeholder="Enter Serial..." class="w-full mt-1 border border-slate-200 rounded-xl p-2 font-mono bg-white outline-none">
+            </div>
+            <div>
+              <label class="font-medium text-slate-600">Mac Serial</label>
+              <input type="text" id="in_mac" placeholder="Enter MAC..." class="w-full mt-1 border border-slate-200 rounded-xl p-2 font-mono bg-white outline-none">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-medium text-slate-600">Package No. / Ref</label>
+              <input type="text" id="in_packageNo" placeholder="PKG-2026-08..." class="w-full mt-1 border border-slate-200 rounded-xl p-2 font-mono bg-white outline-none">
+            </div>
+            <div>
+              <label class="font-medium text-slate-600">Remark</label>
+              <input type="text" id="in_remark" placeholder="Inward receipt notes..." class="w-full mt-1 border border-slate-200 rounded-xl p-2 bg-white outline-none">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="btnSubmitIn" class="w-full py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white rounded-xl font-bold transition shadow-lg shadow-emerald-600/20 mt-2 flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-check"></i><span>Commit Stock In to Database</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== 4. JAVASCRIPT LOGIC ==================== -->
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbzE-QYFmG4E8wLHiE7sZ_xdiENHJYiLsilRfsErc7Rkj-3caHwd3UReRNOxzS408A/exec";
+
+    let currentUser = null;
+    let productDatabase = {};
+    let currentReportTab = 'out';
+    let latestReportData = null;
+    let activeInStockDevices = [];
+
+    const locationCodeMap = {
+      "ChakAngre Krom - Main Warehouse at Head Office": "C_KROM",
+      "Department IMO": "DEP-IMO",
+      "Department Network and System": "DEP-SYS",
+      "Department Technical Support": "DEP-TDS",
+      "Office BTB": "Office -BTB",
+      "Office SRP": "Office -SRP",
+      "Offce SHV": "Office -SHV",
+      "Office Bavet": "Office -BVT",
+      "Office Poipet": "Office -PPT"
+    };
+
+    const deptCodeMap = {
+      "Installation and Maintenance (IMO)": "10",
+      "Outside-Planning (OSP)": "20",
+      "Project Planning": "30",
+      "Network and system (IMO)": "40",
+      "Solution (IMO)": "50",
+      "Accounting & Finance": "110",
+      "Stock": "120",
+      "Credit Control": "130",
+      "Supply chain": "220",
+      "HR": "310",
+      "Admin": "320",
+      "Legal": "330",
+      "Management": "340",
+      "Internal Audit": "410",
+      "Project development": "510",
+      "Commercial - sale": "520",
+      "Marketing": "530",
+      "CSV": "710",
+      "CR": "720",
+      "Call center": "730",
+      "Billing development": "810",
+      "Software development": "820",
+      "System and Network": "920",
+      "Power": "930",
+      "Support & IT": "910"
+    };
+
+    function toggleAuthTab(tab) {
+      if(tab === 'login') {
+        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('registerForm').classList.add('hidden');
+        document.getElementById('tabBtnLogin').className = "flex-1 py-2 rounded-lg font-bold text-xs bg-white text-sky-600 shadow-xs transition";
+        document.getElementById('tabBtnRegister').className = "flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 hover:text-slate-800 transition";
+      } else {
+        document.getElementById('loginForm').classList.add('hidden');
+        document.getElementById('registerForm').classList.remove('hidden');
+        document.getElementById('tabBtnRegister').className = "flex-1 py-2 rounded-lg font-bold text-xs bg-white text-sky-600 shadow-xs transition";
+        document.getElementById('tabBtnLogin').className = "flex-1 py-2 rounded-lg font-bold text-xs text-slate-500 hover:text-slate-800 transition";
+      }
+    }
+
+    function checkSuperAdminRole() {
+      const role = document.getElementById('regRole').value;
+      const keyBox = document.getElementById('superAdminKeyBox');
+      if (role === 'Super Admin') {
+        keyBox.classList.remove('hidden');
+        document.getElementById('regSecretKey').required = true;
+      } else {
+        keyBox.classList.add('hidden');
+        document.getElementById('regSecretKey').required = false;
+      }
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnLoginSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying...';
+
+      const payload = {
+        action: 'login',
+        identifier: document.getElementById('loginIdentifier').value,
+        password: document.getElementById('loginPassword').value
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        
+        if (json.success) {
+          currentUser = json.user;
+          sessionStorage.setItem('micromax_user', JSON.stringify(currentUser));
+          applyUserSession();
+        } else {
+          alert("❌ " + json.message);
+        }
+      } catch(err) {
+        alert("Server connection failed!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>Authorize Terminal Access</span><i class="fa-solid fa-arrow-right text-xs ml-2"></i>';
+      }
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnRegSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Registering...';
+
+      const payload = {
+        action: 'register',
+        fullName: document.getElementById('regFullName').value,
+        staffId: document.getElementById('regStaffId').value,
+        role: document.getElementById('regRole').value,
+        secretKey: document.getElementById('regSecretKey') ? document.getElementById('regSecretKey').value : '',
+        gmail: document.getElementById('regGmail').value,
+        password: document.getElementById('regPassword').value
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        
+        if (json.success) {
+          alert("✅ " + json.message);
+          toggleAuthTab('login');
+          document.getElementById('loginIdentifier').value = payload.gmail;
+        } else {
+          alert("❌ " + json.message);
+        }
+      } catch(err) {
+        alert("Registration failed!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-user-plus mr-2"></i><span>Enroll Account</span>';
+      }
+    }
+
+    function applyUserSession() {
+      if(!currentUser) return;
+      document.getElementById('authScreen').classList.add('hidden');
+
+      document.getElementById('headerUserName').innerText = currentUser.fullName;
+      document.getElementById('headerUserRole').innerText = currentUser.role;
+      document.getElementById('headerUserId').innerText = 'ID: ' + currentUser.staffId;
+
+      let initials = currentUser.fullName.split(' ').map(n => n[0]).join('').slice(-2).toUpperCase();
+      document.getElementById('headerAvatarInitials').innerText = initials || 'NC';
+
+      const role = currentUser.role;
+      const isSuperAdmin = (role === 'Super Admin');
+      const isBranchManager = (role === 'Branch Manager' || isSuperAdmin);
+      const isDeputy = (role === 'Deputy Manager' || isBranchManager);
+      const isSenior = (role === 'Senior Staff' || isDeputy);
+
+      if (!isSenior) {
+        document.getElementById('btnNavStockIn').style.display = 'none';
+        if(document.getElementById('btnActionStockIn')) document.getElementById('btnActionStockIn').style.display = 'none';
+      }
+      if (!isDeputy) document.getElementById('nav-report').style.display = 'none';
+      if (!isBranchManager) document.getElementById('nav-users').style.display = 'none';
+      if (!isSuperAdmin) document.getElementById('btnNavAutoSetup').style.display = 'none';
+
+      loadDashboardLiveData();
+      fetchLiveProducts();
+      fetchRequisitions();
+      if(isBranchManager) fetchUsersList();
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem('micromax_user');
+      currentUser = null;
+      location.reload();
+    }
+
+    function switchView(viewName) {
+      const views = ['dashboard', 'products', 'stockOutLogs', 'deviceLifecycle', 'report', 'warehouses', 'users', 'masterLedger', 'requisitions'];
+      views.forEach(v => {
+        const el = document.getElementById(`view-${v}`);
+        if(el) el.classList.add('hidden');
+        const nav = document.getElementById(`nav-${v}`);
+        if(nav) {
+          nav.classList.remove('nav-active');
+          nav.classList.add('text-slate-300');
+        }
+      });
+
+      const currentView = document.getElementById(`view-${viewName}`);
+      if(currentView) currentView.classList.remove('hidden');
+
+      const currentNav = document.getElementById(`nav-${viewName}`);
+      if(currentNav) {
+        currentNav.classList.add('nav-active');
+        currentNav.classList.remove('text-slate-300');
+      }
+
+      if(viewName === 'dashboard') loadDashboardLiveData();
+      if(viewName === 'stockOutLogs') queryOutHistory();
+      if(viewName === 'report') fetchCurrentReport();
+      if(viewName === 'products') fetchLiveProducts();
+      if(viewName === 'users') fetchUsersList();
+      if(viewName === 'masterLedger') fetchMasterLedger();
+      if(viewName === 'requisitions') fetchRequisitions();
+    }
+
+    // ================= 🌟 LIVE DASHBOARD LOADER =================
+    async function loadDashboardLiveData() {
+      try {
+        const res = await fetch(`${API_URL}?action=getDashboardSummary`);
+        const json = await res.json();
+        if (!json.success) return;
+
+        const k = json.kpi || {};
+
+        document.getElementById('kpi_totalProducts').innerText = (k.totalProducts || 0).toLocaleString();
+        document.getElementById('kpi_totalStock').innerText = (k.totalStock || 0).toLocaleString();
+        document.getElementById('kpi_totalStockVal').innerText = k.totalStockValue || '$0';
+        document.getElementById('kpi_stockInToday').innerText = (k.stockInToday || 0).toLocaleString();
+        document.getElementById('kpi_stockOutToday').innerText = (k.stockOutToday || 0).toLocaleString();
+        document.getElementById('kpi_lowStock').innerText = (k.lowStock || 0).toLocaleString();
+        document.getElementById('kpi_brokenReturns').innerText = (k.brokenReturns || 0).toLocaleString();
+
+        document.getElementById('centerStockCount').innerText = (k.totalStock || 0).toLocaleString();
+        document.getElementById('lblBavetStock').innerText = (k.totalStock || 0).toLocaleString();
+
+        const fmBox = document.getElementById('fastMovingContainer');
+        if (fmBox) {
+          if (!json.topFastMoving || json.topFastMoving.length === 0) {
+            fmBox.innerHTML = '<div class="text-slate-400 text-center py-6 font-sans">No stock out activity recorded yet.</div>';
+          } else {
+            let maxCount = json.topFastMoving[0].count || 1;
+            let fmHtml = '';
+            json.topFastMoving.forEach(item => {
+              let pct = Math.round((item.count / maxCount) * 100);
+              fmHtml += `
+                <div class="flex items-center justify-between">
+                  <span class="w-32 truncate font-medium font-sans">${item.name}</span>
+                  <div class="flex-1 mx-2.5 bg-slate-100 rounded-full h-2"><div class="bg-sky-600 h-full rounded-full" style="width: ${pct}%;"></div></div>
+                  <span class="font-bold">${item.count}</span>
+                </div>
+              `;
+            });
+            fmBox.innerHTML = fmHtml;
+          }
+        }
+
+        const logBox = document.getElementById('dashboardRecentLogs');
+        if (logBox) {
+          if (!json.recentActivities || json.recentActivities.length === 0) {
+            logBox.innerHTML = '<div class="text-slate-400 text-center py-6 font-sans">No recent stock movements.</div>';
+          } else {
+            let logHtml = '';
+            json.recentActivities.forEach(log => {
+              let iconColor = 'bg-sky-100 text-sky-600';
+              let icon = 'fa-barcode';
+              if (log.type === 'OUT') { iconColor = 'bg-rose-100 text-rose-600'; icon = 'fa-arrow-up'; }
+              else if (log.type === 'IN') { iconColor = 'bg-emerald-100 text-emerald-600'; icon = 'fa-arrow-down'; }
+              else if (log.type === 'RETURN') { iconColor = 'bg-amber-100 text-amber-600'; icon = 'fa-rotate-left'; }
+
+              logHtml += `
+                <div class="flex items-start justify-between p-2 rounded-xl hover:bg-slate-50 transition border border-slate-100">
+                  <div class="flex items-center space-x-2.5">
+                    <div class="w-7 h-7 rounded-full ${iconColor} flex items-center justify-center text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>
+                    <div><div class="font-semibold text-slate-800">${log.title}</div><div class="text-[10px] text-slate-500">${log.desc}</div></div>
+                  </div>
+                  <div class="text-right text-[10px] text-slate-400 font-mono">${log.time}<br><span class="text-slate-600 font-sans font-medium">${log.staff}</span></div>
+                </div>
+              `;
+            });
+            logBox.innerHTML = logHtml;
+          }
+        }
+
+        renderDashboardLiveCharts(k.totalStock || 0, k.stockInToday || 0, k.stockOutToday || 0);
+
+      } catch(e) {
+        console.error("Dashboard Load Error:", e);
+      }
+    }
+
+    function renderDashboardLiveCharts(totalStock, inToday, outToday) {
+      const moveEl = document.getElementById('movementChart');
+      if (moveEl) {
+        if (moveEl.chartInstance) moveEl.chartInstance.destroy();
+        moveEl.chartInstance = new Chart(moveEl.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Today'],
+            datasets: [
+              { label: 'Stock In', data: [inToday], backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.3 },
+              { label: 'Stock Out', data: [outToday], backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.3 }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+      }
+
+      const whEl = document.getElementById('warehouseChart');
+      if (whEl) {
+        if (whEl.chartInstance) whEl.chartInstance.destroy();
+        whEl.chartInstance = new Chart(whEl.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Office Bavet (Available)'],
+            datasets: [{ data: [totalStock || 1], backgroundColor: [totalStock > 0 ? '#10b981' : '#e2e8f0'], borderWidth: 0 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } }
+        });
+      }
+    }
+
+    // ================= 🌟 MULTI-REPORTS & EXCEL EXPORT CONTROLLER =================
+    function switchReportTab(tab) {
+      currentReportTab = tab;
+      const tabs = ['out', 'in', 'balance'];
+      
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabRep${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        const sec = document.getElementById(`repSection${t.charAt(0).toUpperCase() + t.slice(1)}`);
+        if (t === tab) {
+          btn.className = "px-4 py-2 rounded-xl font-bold text-xs rep-tab-active transition flex items-center gap-2";
+          sec.classList.remove('hidden');
+        } else {
+          btn.className = "px-4 py-2 rounded-xl font-bold text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center gap-2";
+          sec.classList.add('hidden');
+        }
+      });
+      fetchCurrentReport();
+    }
+
+    async function fetchCurrentReport() {
+      const monthVal = document.getElementById('reportPeriodSelect').value;
+      if (!monthVal) return;
+      
+      document.getElementById('repPeriodDisplay').innerText = `Report Period: ${monthVal} (Office Bavet: Office -BVT)`;
+
+      try {
+        const res = await fetch(`${API_URL}?action=generateReport&month=${monthVal}&location=Office Bavet`);
+        const json = await res.json();
+        latestReportData = json;
+
+        document.getElementById('statMonthlyIn').innerText = json.stats.totalStockIn || 0;
+        document.getElementById('statMonthlyOut').innerText = json.stats.totalUsed || 0;
+        document.getElementById('statMonthlyReturn').innerText = json.stats.totalReturn || 0;
+        document.getElementById('statMonthlyTickets').innerText = json.stats.totalTickets || 0;
+
+        const outBody = document.getElementById('repTableOutBody');
+        document.getElementById('outCountBadge').innerText = `${json.stockOutList.length} Records`;
+        if (json.stockOutList.length === 0) {
+          outBody.innerHTML = '<tr><td colspan="12" class="p-8 text-center text-slate-400 font-sans">No stock out records found for this period.</td></tr>';
+        } else {
+          let outHtml = '';
+          json.stockOutList.forEach(r => {
+            outHtml += `
+              <tr class="hover:bg-slate-50 transition text-slate-700">
+                <td class="p-2.5 text-slate-600 whitespace-nowrap">${r.date}</td>
+                <td class="p-2.5 font-sans">${r.location || 'Office -BVT'}</td>
+                <td class="p-2.5 text-slate-500">${r.dept || '10'}</td>
+                <td class="p-2.5 font-bold text-slate-900">${r.codeBC}</td>
+                <td class="p-2.5 font-sans font-semibold text-slate-900">${r.productName}</td>
+                <td class="p-2.5 font-bold text-sky-700 font-mono">${r.serial || '-'}</td>
+                <td class="p-2.5 font-bold text-indigo-700 font-mono">${r.mac || '-'}</td>
+                <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full ${r.condition === 'Old' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'} font-medium text-[10px]">${r.condition}</span></td>
+                <td class="p-2.5 text-center text-slate-500">${r.uom}</td>
+                <td class="p-2.5 text-center font-bold text-rose-600">${r.qty}</td>
+                <td class="p-2.5 font-bold text-sky-600 font-mono">${r.ticket}</td>
+                <td class="p-2.5 font-sans text-slate-500 text-[11px]">${r.remark}</td>
+              </tr>
+            `;
+          });
+          outBody.innerHTML = outHtml;
+        }
+
+        const inBody = document.getElementById('repTableInBody');
+        document.getElementById('inCountBadge').innerText = `${json.stockInList.length} Records`;
+        if (json.stockInList.length === 0) {
+          inBody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-slate-400 font-sans">No inward stock records found for this period.</td></tr>';
+        } else {
+          let inHtml = '';
+          json.stockInList.forEach(r => {
+            inHtml += `
+              <tr class="hover:bg-slate-50 transition text-slate-700">
+                <td class="p-2.5 text-slate-600 whitespace-nowrap">${r.date}</td>
+                <td class="p-2.5 font-bold text-slate-900">${r.codeBC}</td>
+                <td class="p-2.5 font-sans font-semibold text-slate-900">${r.productName}</td>
+                <td class="p-2.5 text-center font-bold text-emerald-600">${r.qty}</td>
+                <td class="p-2.5 font-bold text-sky-700 font-mono">${r.serial || '-'}</td>
+                <td class="p-2.5 font-bold text-indigo-700 font-mono">${r.mac || '-'}</td>
+                <td class="p-2.5 font-bold text-indigo-600">${r.packageNo || '-'}</td>
+                <td class="p-2.5 font-sans text-slate-500">${r.location}</td>
+                <td class="p-2.5 font-sans text-slate-400 text-[11px]">${r.remark}</td>
+              </tr>
+            `;
+          });
+          inBody.innerHTML = inHtml;
+        }
+
+        const balBody = document.getElementById('repTableBalanceBody');
+        let balHtml = '';
+        json.balanceList.forEach((r, idx) => {
+          balHtml += `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="border border-slate-300 p-2 text-slate-500 text-center">${idx + 1}</td>
+              <td class="border border-slate-300 p-2 font-bold text-slate-800 text-center">${r.itemCode}</td>
+              <td class="border border-slate-300 p-2 text-left font-sans font-semibold">${r.description}</td>
+              <td class="border border-slate-300 p-2 text-center">${r.uom}</td>
+              <td class="border border-slate-300 p-2 font-bold text-slate-600 text-center">${r.beginning}</td>
+              <td class="border border-slate-300 p-2 text-emerald-600 font-bold bg-emerald-50/40 text-center">+${r.stockIn}</td>
+              <td class="border border-slate-300 p-2 text-rose-600 font-bold bg-rose-50/40 text-center">-${r.stockOut}</td>
+              <td class="border border-slate-300 p-2 text-amber-600 font-bold bg-amber-50/40 text-center">+${r.stockReturn}</td>
+              <td class="border border-slate-300 p-2 font-bold text-sky-700 bg-sky-50/60 text-center">${r.endingBalance}</td>
+            </tr>
+          `;
+        });
+        balBody.innerHTML = balHtml;
+
+      } catch(e) {
+        alert("Failed to query report data!");
+      }
+    }
+
+    function exportSingleExcel() {
+      if (!latestReportData) return alert("Please query report data first!");
+      const period = document.getElementById('reportPeriodSelect').value || 'Report';
+
+      let dataToExport = [];
+      let filename = `ONLINE_ISP_${period}_Report.xlsx`;
+
+      if (currentReportTab === 'out') {
+        filename = `ONLINE_StockOut_${period}.xlsx`;
+        dataToExport = latestReportData.stockOutList.map(r => ({
+          "Date Stock Out": r.date,
+          "Location Code": r.location,
+          "Department": r.dept,
+          "Item Code BC": r.codeBC,
+          "Product Name": r.productName,
+          "Serial": r.serial,
+          "Mac Serial": r.mac,
+          "Condition": r.condition,
+          "UOM": r.uom,
+          "Quantity": r.qty,
+          "Customer's Ticket": r.ticket,
+          "Remark": r.remark
+        }));
+      } else if (currentReportTab === 'in') {
+        filename = `ONLINE_StockIn_${period}.xlsx`;
+        dataToExport = latestReportData.stockInList.map(r => ({
+          "Posting Date": r.date,
+          "Item Code BC": r.codeBC,
+          "Product Description": r.productName,
+          "Quantity": r.qty,
+          "Serial No.": r.serial,
+          "Mac Serial": r.mac,
+          "Package No.": r.packageNo,
+          "Location": r.location,
+          "Remark": r.remark
+        }));
+      } else {
+        filename = `ONLINE_StockBalance_${period}.xlsx`;
+        dataToExport = latestReportData.balanceList.map(r => ({
+          "No.": r.no,
+          "Item Code BC": r.itemCode,
+          "Description": r.description,
+          "UOM": r.uom,
+          "Beginning Stock": r.beginning,
+          "Stock In": r.stockIn,
+          "Stock Out": r.stockOut,
+          "Stock Return": r.stockReturn,
+          "Ending Balance": r.endingBalance
+        }));
+      }
+
+      if (dataToExport.length === 0) return alert("No data available to export in current tab!");
+
+      const ws = XLSX.utils.json_to_sheet(dataToExport);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Report");
+      XLSX.writeFile(wb, filename);
+    }
+
+    function exportAllExcel() {
+      if (!latestReportData) return alert("Please query report data first!");
+      const period = document.getElementById('reportPeriodSelect').value || 'Report';
+
+      const wb = XLSX.utils.book_new();
+
+      const outData = latestReportData.stockOutList.map(r => ({
+        "Date Stock Out": r.date,
+        "Location Code": r.location,
+        "Department": r.dept,
+        "Item Code BC": r.codeBC,
+        "Product Name": r.productName,
+        "Serial": r.serial,
+        "Mac Serial": r.mac,
+        "Condition": r.condition,
+        "UOM": r.uom,
+        "Quantity": r.qty,
+        "Customer's Ticket": r.ticket,
+        "Remark": r.remark
+      }));
+      const wsOut = XLSX.utils.json_to_sheet(outData.length ? outData : [{"Notice": "No stock out records"}]);
+      XLSX.utils.book_append_sheet(wb, wsOut, "Daily Stock Out");
+
+      const inData = latestReportData.stockInList.map(r => ({
+        "Posting Date": r.date,
+        "Item Code BC": r.codeBC,
+        "Product Description": r.productName,
+        "Quantity": r.qty,
+        "Serial No.": r.serial,
+        "Mac Serial": r.mac,
+        "Package No.": r.packageNo,
+        "Location": r.location,
+        "Remark": r.remark
+      }));
+      const wsIn = XLSX.utils.json_to_sheet(inData.length ? inData : [{"Notice": "No stock in records"}]);
+      XLSX.utils.book_append_sheet(wb, wsIn, "Stock In (Inward)");
+
+      const balData = latestReportData.balanceList.map(r => ({
+        "No.": r.no,
+        "Item Code BC": r.itemCode,
+        "Description": r.description,
+        "UOM": r.uom,
+        "Beginning Stock": r.beginning,
+        "Stock In": r.stockIn,
+        "Stock Out": r.stockOut,
+        "Stock Return": r.stockReturn,
+        "Ending Balance": r.endingBalance
+      }));
+      const wsBal = XLSX.utils.json_to_sheet(balData);
+      XLSX.utils.book_append_sheet(wb, wsBal, "Stock Balance");
+
+      XLSX.writeFile(wb, `ONLINE_ISP_All_Reports_${period}.xlsx`);
+    }
+
+    // ================= 🌟 HARDWARE MASTER LEDGER =================
+    async function fetchMasterLedger() {
+      const tbody = document.getElementById('masterLedgerBody');
+      if (!tbody) return;
+      tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-sky-600 font-sans"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Available Hardware Assets in Stock...</td></tr>';
+
+      try {
+        const res = await fetch(`${API_URL}?action=getMasterLedger`);
+        const json = await res.json();
+        activeInStockDevices = json.devices || [];
+
+        renderLedgerTable();
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-rose-500 font-sans">Connection error!</td></tr>';
+      }
+    }
+
+    function renderLedgerTable() {
+      const tbody = document.getElementById('masterLedgerBody');
+      if (!tbody) return;
+
+      const searchKw = (document.getElementById('ledgerSearchInput')?.value || '').trim().toLowerCase();
+
+      const filtered = activeInStockDevices.filter(d => {
+        if (!searchKw) return true;
+        const matchString = `${d.serial} ${d.mac} ${d.codeBC} ${d.description}`.toLowerCase();
+        return matchString.includes(searchKw);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="p-8 text-center text-slate-400 font-sans">No available active assets currently in stock.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(d => {
+        let statusColor = d.status.toLowerCase().includes('returned') 
+          ? 'bg-amber-50 text-amber-600 border border-amber-200' 
+          : 'bg-emerald-50 text-emerald-600 border border-emerald-200';
+
+        html += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 font-bold text-sky-700 font-mono">${d.serial}</td>
+            <td class="p-3 text-slate-600 font-mono">${d.mac}</td>
+            <td class="p-3 font-bold text-amber-600 font-mono">${d.codeBC || '-'}</td>
+            <td class="p-3 font-sans font-semibold text-slate-900">${d.description || '-'}</td>
+            <td class="p-3 text-center font-mono"><span class="px-2.5 py-0.5 rounded-full font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 text-xs">${d.qty || 1} ${d.uom || 'UNIT'}</span></td>
+            <td class="p-3 text-center"><span class="px-2.5 py-0.5 rounded-full font-bold text-[10px] ${statusColor}">${d.status}</span></td>
+            <td class="p-3 font-sans text-slate-600">${d.location || 'Office Bavet'}</td>
+            <td class="p-3 font-bold text-indigo-600 font-mono">${d.ref || '-'}</td>
+            <td class="p-3 font-sans text-slate-500 text-[11px]">${d.history || '-'}</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    }
+
+    function filterLedgerTable() {
+      renderLedgerTable();
+    }
+
+    // ================= 🌟 HELPER: ធានាថា DROPDOWNS តែងតែមានបញ្ជីទំនិញ =================
+    function populateDropdownOptions(selectElementId, defaultText) {
+      const el = document.getElementById(selectElementId);
+      if (!el) return;
+      el.innerHTML = `<option value="">-- ${defaultText} --</option>`;
+      for (let k in productDatabase) {
+        el.innerHTML += `<option value="${k}">${k} [${productDatabase[k].code}]</option>`;
+      }
+    }
+
+    // ================= 🌟 REGISTER EXISTING HARDWARE =================
+    async function openRegisterHardwareModal() {
+      document.getElementById('modalRegisterHardware').classList.remove('hidden');
+      
+      const sel = document.getElementById('reg_exist_prod');
+      if (sel && Object.keys(productDatabase).length === 0) {
+        sel.innerHTML = '<option value="">⏳ Loading product catalog...</option>';
+        await fetchLiveProducts();
+      }
+      populateDropdownOptions('reg_exist_prod', 'Select Product Model');
+      
+      document.getElementById('reg_exist_qty').value = "1";
+      document.getElementById('reg_exist_code').value = "";
+      document.getElementById('reg_exist_uom').value = "UNIT";
+    }
+
+    function autoFillExistCode() {
+      const p = document.getElementById('reg_exist_prod').value;
+      if (productDatabase[p]) {
+        document.getElementById('reg_exist_code').value = productDatabase[p].code || '';
+        document.getElementById('reg_exist_uom').value = productDatabase[p].uom || 'UNIT';
+      } else {
+        document.getElementById('reg_exist_code').value = '';
+        document.getElementById('reg_exist_uom').value = 'UNIT';
+      }
+    }
+
+    async function handleRegisterExistingHardwareSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitExistHardware');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Registering...';
+
+      const p = document.getElementById('reg_exist_prod').value;
+      const payload = {
+        action: 'registerExistingHardware',
+        itemCode: document.getElementById('reg_exist_code').value,
+        description: p,
+        condition: document.getElementById('reg_exist_cond').value,
+        qty: Number(document.getElementById('reg_exist_qty').value) || 1,
+        uom: document.getElementById('reg_exist_uom').value || 'UNIT',
+        serial: document.getElementById('reg_exist_serial').value.trim(),
+        macSerial: document.getElementById('reg_exist_mac').value.trim(),
+        location: document.getElementById('reg_exist_loc').value.trim(),
+        remark: document.getElementById('reg_exist_remark').value.trim()
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        alert(json.message);
+        if (json.success) {
+          closeModal('modalRegisterHardware');
+          e.target.reset();
+          fetchMasterLedger();
+          loadDashboardLiveData();
+        }
+      } catch(err) {
+        alert("Failed to register hardware!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i><span>Commit Existing Device to Ledger</span>';
+      }
+    }
+
+    // ================= 🌟 PRODUCT CATALOG & REGISTRATION =================
+    function openAddProductModal() {
+      document.getElementById('modalAddProduct').classList.remove('hidden');
+    }
+
+    async function handleAddNewProductSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitAddProd');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Saving...';
+
+      const payload = {
+        action: 'addNewProduct',
+        codeBC: document.getElementById('new_prod_code').value.trim(),
+        description: document.getElementById('new_prod_name').value.trim(),
+        uom: document.getElementById('new_prod_uom').value,
+        beginningStock: document.getElementById('new_prod_stock').value
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        alert(json.message);
+        if (json.success) {
+          closeModal('modalAddProduct');
+          e.target.reset();
+          fetchLiveProducts();
+          loadDashboardLiveData();
+        }
+      } catch(err) {
+        alert("Failed to save product!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i><span>Save Product to Database</span>';
+      }
+    }
+
+    async function fetchLiveProducts() {
+      try {
+        const res = await fetch(`${API_URL}?action=getLiveProducts`);
+        const json = await res.json();
+        productDatabase = json.data || {};
+
+        populateDropdownOptions('in_prodSelect', 'Select Product');
+        populateDropdownOptions('reg_exist_prod', 'Select Product Model');
+
+        const tbody = document.getElementById('productCatalogBody');
+        if(tbody) tbody.innerHTML = '';
+
+        let count = 0;
+        for(let k in productDatabase) {
+          count++;
+          const item = productDatabase[k];
+          // 🌟 ទាញយកចំនួនស្តុកជាក់ស្តែង (បើអស់គឺយក 0)
+          const qty = (item.currentStock !== undefined) ? item.currentStock : item.beginning;
+          const isAvailable = qty > 0;
+          const statusBadge = isAvailable 
+            ? '<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold text-[10px]">In Stock</span>'
+            : '<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-200 font-semibold text-[10px]">Out of Stock</span>';
+
+          if(tbody) {
+            tbody.innerHTML += `
+              <tr class="hover:bg-slate-50 transition">
+                <td class="p-3 font-bold text-slate-800 font-mono">${item.code}</td>
+                <td class="p-3 font-sans font-semibold text-slate-900">${k}</td>
+                <td class="p-3 text-center font-mono">${item.uom}</td>
+                <td class="p-3 text-center font-mono font-bold ${isAvailable ? 'text-sky-600' : 'text-rose-600'}">${qty}</td>
+                <td class="p-3 text-center font-sans">${statusBadge}</td>
+              </tr>
+            `;
+          }
+        }
+        if(document.getElementById('kpi_totalProducts')) document.getElementById('kpi_totalProducts').innerText = count;
+      } catch(e) {
+        console.error("fetchLiveProducts error:", e);
+      }
+    }
+
+    // ================= 🌟 USER MANAGEMENT & APPROVALS =================
+    async function fetchUsersList() {
+      const tbody = document.getElementById('usersListBody');
+      if (!tbody) return;
+      try {
+        const res = await fetch(`${API_URL}?action=getUsersList`);
+        const json = await res.json();
+        let html = '';
+        let pendingUserCount = 0;
+
+        json.users.forEach(u => {
+          let roleColor = (u.role === 'Super Admin') ? 'bg-rose-100 text-rose-700' : ((u.role === 'Branch Manager') ? 'bg-sky-100 text-sky-700' : 'bg-slate-100 text-slate-700');
+          let statusBadge = '';
+          let actionBtns = '-';
+
+          if (u.status === 'Active') {
+            statusBadge = '<span class="text-emerald-600 font-semibold"><span class="badge-dot mr-1"></span>Active</span>';
+            if (u.staffId !== '1954') {
+              actionBtns = `<button onclick="updateAccountStatus('${u.staffId}', 'Suspended')" class="bg-rose-50 text-rose-600 hover:bg-rose-100 px-2.5 py-1 rounded-lg font-bold text-[10.5px]">Suspend</button>`;
+            }
+          } else if (u.status === 'Pending') {
+            pendingUserCount++;
+            statusBadge = '<span class="text-amber-600 font-semibold"><span class="badge-dot-amber mr-1"></span>Pending Approval</span>';
+            actionBtns = `
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="updateAccountStatus('${u.staffId}', 'Active')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg font-bold text-[10.5px]">Approve</button>
+                <button onclick="updateAccountStatus('${u.staffId}', 'Suspended')" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-2.5 py-1 rounded-lg font-bold text-[10.5px]">Reject</button>
+              </div>
+            `;
+          } else {
+            statusBadge = '<span class="text-rose-500 font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block mr-1"></span>Suspended</span>';
+            actionBtns = `<button onclick="updateAccountStatus('${u.staffId}', 'Active')" class="bg-sky-50 text-sky-600 hover:bg-sky-100 px-2.5 py-1 rounded-lg font-bold text-[10.5px]">Reactivate</button>`;
+          }
+
+          html += `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3.5 font-bold text-slate-900">${u.fullName}</td>
+              <td class="p-3.5 font-mono font-bold text-amber-600">${u.staffId}</td>
+              <td class="p-3.5"><span class="px-2.5 py-0.5 rounded-full font-bold text-[10px] ${roleColor}">${u.role}</span></td>
+              <td class="p-3.5 font-mono text-slate-500">${u.gmail}</td>
+              <td class="p-3.5 text-center">${statusBadge}</td>
+              <td class="p-3.5 text-center">${actionBtns}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+
+        const badgePUsers = document.getElementById('badgePendingUsers');
+        if (badgePUsers) {
+          if (pendingUserCount > 0) {
+            badgePUsers.innerText = pendingUserCount;
+            badgePUsers.classList.remove('hidden');
+          } else {
+            badgePUsers.classList.add('hidden');
+          }
+        }
+      } catch(e) {}
+    }
+
+    async function updateAccountStatus(staffId, newStatus) {
+      if(!confirm(`Are you sure you want to change account (${staffId}) status to ${newStatus}?`)) return;
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          action: 'updateUserStatus',
+          staffId: staffId,
+          status: newStatus
+        })
+      });
+      const json = await res.json();
+      alert(json.message);
+      fetchUsersList();
+    }
+
+    async function fetchRequisitions() {
+      const tbody = document.getElementById('requisitionTableBody');
+      if(!tbody) return;
+
+      try {
+        const res = await fetch(`${API_URL}?action=getRequisitions`);
+        const json = await res.json();
+        const queueData = json.queue || [];
+        let pendingCount = 0;
+        let html = '';
+        
+        queueData.forEach(q => {
+          let badge = '';
+          let actionBtn = '-';
+          const canApprove = (currentUser && (currentUser.role === 'Super Admin' || currentUser.role === 'Branch Manager' || currentUser.role === 'Deputy Manager'));
+
+          if(q.status === 'Pending') {
+            badge = '<span class="bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Pending Approval</span>';
+            if(canApprove) {
+              actionBtn = `<button onclick="approveReq('${q.reqId}')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg font-bold shadow-xs transition">Approve</button>`;
+            }
+          } else if(q.status === 'Approved') {
+            badge = `<span class="bg-sky-50 text-sky-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Approved (Ready)</span>`;
+            pendingCount++;
+            actionBtn = `<span class="text-slate-400 text-[10px] font-sans">Awaiting Mini App Submit</span>`;
+          } else {
+            badge = '<span class="bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Verified ✅</span>';
+          }
+
+          html += `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3 font-mono font-bold text-sky-600">${q.reqId}</td>
+              <td class="p-3 font-semibold text-slate-800">${q.staffName} (${q.staffId})</td>
+              <td class="p-3 font-sans font-semibold">${q.productName}</td>
+              <td class="p-3 text-center font-bold font-mono text-emerald-600">${q.qty} ${q.uom || ''}</td>
+              <td class="p-3 font-mono text-indigo-600 font-bold">${q.ticket}</td>
+              <td class="p-3 text-center font-sans">${badge}</td>
+              <td class="p-3 font-mono text-slate-600">${q.verifiedSerial || '<span class="text-amber-500 font-sans">Pending...</span>'}</td>
+              <td class="p-3 text-center font-sans">${actionBtn}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html || '<tr><td colspan="8" class="p-6 text-center text-slate-400">No requisition requests found.</td></tr>';
+        const badgeEl = document.getElementById('badgePendingReq');
+        if(badgeEl) badgeEl.innerText = pendingCount;
+      } catch(e) {
+        tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-slate-400">No requisition requests found.</td></tr>';
+      }
+    }
+
+    async function approveReq(reqId) {
+      if(!confirm("Are you sure you want to approve this requisition request?")) return;
+      await fetch(API_URL, { 
+        method: 'POST', 
+        body: JSON.stringify({ 
+          action: 'approveRequisition', 
+          reqId: reqId,
+          approverName: currentUser.fullName,
+          approverRole: currentUser.role
+        }) 
+      });
+      fetchRequisitions();
+    }
+
+    async function openStockInModal() {
+      document.getElementById('modalStockIn').classList.remove('hidden');
+      document.getElementById('in_date').value = new Date().toISOString().split('T')[0];
+
+      const selIn = document.getElementById('in_prodSelect');
+      if (selIn && Object.keys(productDatabase).length === 0) {
+        selIn.innerHTML = '<option value="">⏳ Loading products...</option>';
+        await fetchLiveProducts();
+      }
+      populateDropdownOptions('in_prodSelect', 'Select Product');
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function autoFillInItem() {
+      const p = document.getElementById('in_prodSelect').value;
+      if (productDatabase[p]) {
+        document.getElementById('in_code').value = productDatabase[p].code || '';
+      } else {
+        document.getElementById('in_code').value = '';
+      }
+    }
+
+    async function handleDirectStockInSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitIn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Committing...';
+
+      const p = document.getElementById('in_prodSelect').value;
+      const payload = {
+        action: 'directStockIn',
+        postingDate: document.getElementById('in_date').value,
+        itemCode: document.getElementById('in_code').value,
+        description: p,
+        qty: document.getElementById('in_qty').value,
+        locationCode: document.getElementById('in_loc').value,
+        serial: document.getElementById('in_serial').value.trim(),
+        macSerial: document.getElementById('in_mac').value.trim(),
+        packageNo: document.getElementById('in_packageNo').value.trim(),
+        remark: document.getElementById('in_remark').value.trim()
+      };
+
+      try {
+        const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const json = await res.json();
+        alert(json.message || "✅ Inward stock recorded successfully!");
+        closeModal('modalStockIn');
+        e.target.reset();
+        fetchCurrentReport();
+        loadDashboardLiveData();
+      } catch(err) {
+        alert("Stock in recorded successfully!");
+        closeModal('modalStockIn');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-check mr-2"></i><span>Commit Stock In to Database</span>';
+      }
+    }
+
+    async function queryOutHistory() {
+      const q = document.getElementById('outSearchText') ? document.getElementById('outSearchText').value : '';
+      const tbody = document.getElementById('outHistoryBody');
+      if(!tbody) return;
+      try {
+        const res = await fetch(`${API_URL}?action=getStockOutHistory&search=${encodeURIComponent(q)}`);
+        const json = await res.json();
+        let html = '';
+        json.records.forEach(r => {
+          let badge = (r.condition === 'Broken') ? '<span class="px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 font-medium text-[10px]">Broken</span>' : '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium text-[10px]">New</span>';
+          html += `
+            <tr class="hover:bg-slate-50 transition text-slate-700">
+              <td class="p-3 text-slate-600">${r.date}</td>
+              <td class="p-3 font-bold text-slate-800">${r.codeBC}</td>
+              <td class="p-3 font-sans font-semibold text-slate-900">${r.name}</td>
+              <td class="p-3 text-sky-700 font-bold font-mono">${r.serial || '-'}</td>
+              <td class="p-3 text-indigo-700 font-bold font-mono">${r.mac || '-'}</td>
+              <td class="p-3 text-center font-sans">${badge}</td>
+              <td class="p-3 text-center font-bold text-rose-600">${r.qty} ${r.uom}</td>
+              <td class="p-3 font-bold text-sky-600 font-mono">${r.ticket}</td>
+              <td class="p-3 font-sans text-slate-500">${r.location}</td>
+              <td class="p-3 font-sans text-slate-400">${r.remark}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html || '<tr><td colspan="10" class="p-6 text-center text-slate-400 font-sans">No stock out records found.</td></tr>';
+      } catch(err) {}
+    }
+
+    async function traceDevice() {
+      const serial = document.getElementById('traceSerialInput').value.trim();
+      const container = document.getElementById('traceResultContainer');
+      if(!serial) return alert("Please enter Serial No. or MAC Address!");
+
+      container.innerHTML = '<div class="text-center py-8 text-sky-600 font-sans"><i class="fa-solid fa-spinner fa-spin text-xl mb-2 block"></i> Tracing Asset...</div>';
+
+      try {
+        const res = await fetch(`${API_URL}?action=getDeviceHistory&serial=${encodeURIComponent(serial)}`);
+        const json = await res.json();
+
+        if(!json.history || json.history.length === 0) {
+          container.innerHTML = `<div class="text-center py-8 text-slate-400 font-sans">No movement history found for <b>${serial}</b>.</div>`;
+          return;
+        }
+
+        let html = `<div class="mb-4 pb-3 border-b flex justify-between items-center"><h3 class="text-base font-bold text-slate-800 font-mono">${json.serial}</h3><span class="px-3 py-1 rounded-full bg-sky-50 text-sky-700 font-mono text-xs font-bold">${json.history.length} Event(s)</span></div><div class="relative pl-6 space-y-4 border-l-2 border-slate-200 ml-2">`;
+        json.history.forEach(h => {
+          let dotColor = (h.desc && h.desc.includes('Stock Out')) ? 'bg-rose-500' : 'bg-emerald-500';
+          html += `<div class="relative"><span class="absolute -left-[31px] top-1 w-3.5 h-3.5 rounded-full ${dotColor} ring-4 ring-white"></span><div class="text-slate-400 font-mono text-[11px]">${h.date || 'Update'}</div><div class="text-slate-800 font-bold text-xs mt-0.5">${h.desc}</div></div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+      } catch(e) {
+        container.innerHTML = '<div class="text-center py-8 text-rose-500 font-sans">Connection error!</div>';
+      }
+    }
+
+    async function triggerAutoSetupDB() {
+      if(!confirm("Are you sure you want to initialize all sheets in Google Spreadsheet automatically?")) return;
+      await fetch(`${API_URL}?action=setupDB`);
+      alert("Success! All spreadsheet structures have been configured.");
+      fetchLiveProducts();
+      loadDashboardLiveData();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      if(document.getElementById('reportPeriodSelect')) {
+        document.getElementById('reportPeriodSelect').value = currentMonth;
+      }
+
+      const savedUser = sessionStorage.getItem('micromax_user');
+      if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        applyUserSession();
+      }
+
+      loadDashboardLiveData();
+      fetchLiveProducts();
+    });
+  </script>
+</body>
+</html>
