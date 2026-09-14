@@ -1340,24 +1340,34 @@
           outBody.innerHTML = '<tr><td colspan="12" class="p-8 text-center text-slate-400 font-sans">No stock out records found for this period.</td></tr>';
         } else {
           let outHtml = '';
-          json.stockOutList.forEach(r => {
-            outHtml += `
-              <tr class="hover:bg-slate-50 transition text-slate-700">
-                <td class="p-2.5 text-slate-600 whitespace-nowrap">${r.date}</td>
-                <td class="p-2.5 font-sans">${r.location || 'Office -BVT'}</td>
-                <td class="p-2.5 text-slate-500">${r.dept || '10'}</td>
-                <td class="p-2.5 font-bold text-slate-900">${r.codeBC}</td>
-                <td class="p-2.5 font-sans font-semibold text-slate-900">${r.productName}</td>
-                <td class="p-2.5 font-bold text-sky-700 font-mono">${r.serial || '-'}</td>
-                <td class="p-2.5 font-bold text-indigo-700 font-mono">${r.mac || '-'}</td>
-                <td class="p-2.5 text-center"><span class="px-2 py-0.5 rounded-full ${r.condition === 'Old' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'} font-medium text-[10px]">${r.condition}</span></td>
-                <td class="p-2.5 text-center text-slate-500">${r.uom}</td>
-                <td class="p-2.5 text-center font-bold text-rose-600">${r.qty}</td>
-                <td class="p-2.5 font-bold text-sky-600 font-mono">${r.ticket}</td>
-                <td class="p-2.5 font-sans text-slate-500 text-[11px]">${r.remark}</td>
-              </tr>
-            `;
-          });
+          // ✅ ប្លុកកូដថ្មីត្រឹមត្រូវ៖
+json.stockOutList.forEach(r => {
+  const cond = (r.condition || 'New').toString().trim().toLowerCase();
+  let condBadge = '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 font-medium text-[10px]">New</span>';
+  
+  if (cond.includes('broken') || cond.includes('faulty') || cond.includes('repair') || cond.includes('ខូច')) {
+    condBadge = '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300 font-bold text-[10px]">Broken</span>';
+  } else if (cond.includes('old') || cond.includes('used') || cond.includes('ចាស់')) {
+    condBadge = '<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 border border-amber-200 font-medium text-[10px]">Old</span>';
+  }
+
+  outHtml += `
+    <tr class="hover:bg-slate-50 transition text-slate-700">
+      <td class="p-2.5 text-slate-600 whitespace-nowrap">${r.date}</td>
+      <td class="p-2.5 font-sans">${r.location || 'Office -BVT'}</td>
+      <td class="p-2.5 text-slate-500">${r.dept || '10'}</td>
+      <td class="p-2.5 font-bold text-slate-900">${r.codeBC}</td>
+      <td class="p-2.5 font-sans font-semibold text-slate-900">${r.productName}</td>
+      <td class="p-2.5 font-bold text-sky-700 font-mono">${r.serial || '-'}</td>
+      <td class="p-2.5 font-bold text-indigo-700 font-mono">${r.mac || '-'}</td>
+      <td class="p-2.5 text-center">${condBadge}</td>
+      <td class="p-2.5 text-center text-slate-500">${r.uom}</td>
+      <td class="p-2.5 text-center font-bold text-rose-600">${r.qty}</td>
+      <td class="p-2.5 font-bold text-sky-600 font-mono">${r.ticket}</td>
+      <td class="p-2.5 font-sans text-slate-500 text-[11px]">${r.remark}</td>
+    </tr>
+  `;
+});
           outBody.innerHTML = outHtml;
         }
 
