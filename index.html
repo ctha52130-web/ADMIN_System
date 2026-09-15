@@ -283,137 +283,298 @@
     <!-- VIEWS CONTAINER -->
     <div class="flex-1 overflow-y-auto p-5 space-y-4">
 
-      <!-- ================= VIEW 1: DASHBOARD ================= -->
-      <div id="view-dashboard" class="space-y-4">
-        <div class="flex flex-wrap items-center justify-between gap-3 bg-white px-5 py-3.5 rounded-2xl border border-slate-200/80 shadow-card">
-          <div>
-            <h1 class="text-sm font-extrabold text-slate-800 leading-tight">Live Network Inventory Dashboard</h1>
-            <p class="text-[11px] text-slate-500">Real-time asset visibility, warehouse balance, and field deployment logs</p>
-          </div>
-          <div class="flex items-center gap-2 text-xs">
-            <button onclick="openStockInModal()" id="btnActionStockIn" class="flex items-center space-x-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-4 py-2 rounded-xl font-bold shadow-sm transition">
-              <i class="fa-solid fa-arrow-down-to-bracket text-[11px]"></i><span>+ Stock In (Inward HQ)</span>
-            </button>
-            <button onclick="loadDashboardLiveData(); fetchLiveProducts(); fetchRequisitions();" class="flex items-center space-x-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl font-medium shadow-xs transition">
-              <i class="fa-solid fa-rotate text-xs"></i><span>Refresh Data</span>
-            </button>
-          </div>
+      <!-- ================= VIEW 1: DASHBOARD — CYBER TECH DARK GLOW ================= -->
+<style>
+  .tech-shell {
+    --bg-dark: #030813;
+    --card-bg: rgba(7, 21, 43, 0.78);
+    --card-border: rgba(30, 58, 102, 0.65);
+    --glow-cyan: rgba(8, 169, 245, 0.35);
+  }
+  .tech-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  .tech-card:hover {
+    border-color: rgba(56, 189, 248, 0.45);
+    box-shadow: 0 12px 35px rgba(2, 132, 199, 0.2);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tech-kpi {
+    position: relative;
+    overflow: hidden;
+    min-height: 118px;
+    border-radius: 18px;
+    padding: 14px;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .tech-kpi:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -2px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.25);
+  }
+  .tech-kpi::after {
+    content: "";
+    position: absolute;
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    right: -25px;
+    top: -30px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+  }
+  .tech-btn-green {
+    background: linear-gradient(135deg, #059669, #10b981);
+    box-shadow: 0 0 18px rgba(16, 185, 129, 0.4);
+    transition: all 0.2s ease;
+  }
+  .tech-btn-green:hover {
+    box-shadow: 0 0 24px rgba(16, 185, 129, 0.6);
+    filter: brightness(1.08);
+  }
+  .tech-btn-blue {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    box-shadow: 0 0 18px rgba(14, 165, 233, 0.4);
+    transition: all 0.2s ease;
+  }
+  .tech-btn-blue:hover {
+    box-shadow: 0 0 24px rgba(14, 165, 233, 0.6);
+    filter: brightness(1.08);
+  }
+  .tech-custom-scroll::-webkit-scrollbar {
+    width: 5px;
+  }
+  .tech-custom-scroll::-webkit-scrollbar-thumb {
+    background: #1e3a66;
+    border-radius: 8px;
+  }
+  .tech-custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #38bdf8;
+  }
+</style>
+
+<div id="view-dashboard" class="tech-shell space-y-4 text-slate-200">
+
+  <!-- 🌟 Server Banner Header -->
+  <div class="tech-card relative overflow-hidden px-5 py-4 flex flex-wrap items-center justify-between gap-4 border-sky-500/30">
+    <div class="absolute inset-y-0 right-0 w-2/3 opacity-20 pointer-events-none bg-gradient-to-l from-sky-400 via-indigo-600 to-transparent"></div>
+    
+    <div class="relative z-10 flex items-center gap-3.5">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-700 text-white flex items-center justify-center shadow-lg shadow-sky-500/30 border border-white/20">
+        <i class="fa-solid fa-server text-lg"></i>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> LIVE SYSTEM
+          </span>
+          <h1 class="text-base font-black text-white tracking-wide">Live Network Inventory Dashboard</h1>
         </div>
+        <p class="text-[11px] text-sky-200/70 mt-0.5">Real-time asset visibility, warehouse balance, and field deployment logs</p>
+      </div>
+    </div>
 
-        <!-- Row 1: KPI Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-          <div class="bg-gradient-to-br from-sky-600 to-blue-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Total Products</span><i class="fa-solid fa-cube text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_totalProducts">0</div>
-            <div class="text-[9.5px] text-sky-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-up"></i><span>Active Catalog</span></div>
-          </div>
-          <div class="bg-gradient-to-br from-emerald-600 to-teal-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Total Stock Units</span><i class="fa-solid fa-layer-group text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_totalStock">0</div>
-            <div class="text-[9.5px] text-emerald-100 flex items-center space-x-1"><i class="fa-solid fa-check"></i><span>Active in Store</span></div>
-          </div>
-          <div class="bg-gradient-to-br from-cyan-600 to-teal-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Stock In Today</span><i class="fa-solid fa-truck-ramp-box text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_stockInToday">0</div>
-            <div class="text-[9.5px] text-cyan-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-down"></i><span>Received Units</span></div>
-          </div>
-          <div class="bg-gradient-to-br from-amber-600 to-orange-600 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Stock Out Today</span><i class="fa-solid fa-person-digging text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_stockOutToday">0</div>
-            <div class="text-[9.5px] text-amber-100 flex items-center space-x-1"><i class="fa-solid fa-arrow-up"></i><span>Installed Units</span></div>
-          </div>
-          <div class="bg-gradient-to-br from-rose-500 to-rose-700 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Low Stock Flag</span><i class="fa-solid fa-triangle-exclamation text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_lowStock">0</div>
-            <div class="text-[9.5px] text-rose-100">Replenishment</div>
-          </div>
-          <div class="bg-gradient-to-br from-slate-700 to-slate-800 text-white p-3.5 rounded-2xl shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between text-[11px] opacity-90"><span>Faulty Returns</span><i class="fa-solid fa-circle-xmark text-white/70"></i></div>
-            <div class="my-1.5 text-xl font-black font-mono" id="kpi_brokenReturns">0</div>
-            <div class="text-[9.5px] text-slate-300">Pending RMA/Repair</div>
-          </div>
-        </div>
+    <div class="relative z-10 flex items-center gap-2.5 text-xs">
+      <div class="hidden xl:flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900/80 border border-slate-700/80 text-sky-300 font-mono text-[11px]">
+        <i class="fa-regular fa-clock text-sky-400"></i>
+        <span>Last Update: 2026-09-16 00:25</span>
+      </div>
+      <button onclick="openStockInModal()" id="btnActionStockIn" class="tech-btn-green flex items-center gap-2 text-white px-4 py-2 rounded-xl font-bold border border-emerald-400/40 transition hover:brightness-110">
+        <i class="fa-solid fa-arrow-down-to-bracket text-xs"></i>
+        <span>+ Stock In (Inward HQ)</span>
+      </button>
+      <button onclick="loadDashboardLiveData(); fetchLiveProducts(); fetchRequisitions();" class="tech-btn-blue flex items-center gap-2 text-white px-4 py-2 rounded-xl font-bold border border-sky-400/40 transition hover:brightness-110">
+        <i class="fa-solid fa-rotate text-xs"></i>
+        <span>Refresh Data</span>
+      </button>
+    </div>
+  </div>
 
-        <!-- Row 2: Charts & Top Fast-Moving -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div class="lg:col-span-6 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center space-x-2 font-bold text-slate-800 text-xs"><i class="fa-solid fa-chart-column text-sky-600"></i><span>Stock Movement Velocity (Stock In vs Stock Out)</span></div>
-              <div class="flex items-center space-x-3 text-[10.5px] text-slate-500 font-medium">
-                <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span>Stock In</span></span>
-                <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Stock Out</span></span>
-              </div>
-            </div>
-            <div class="h-56 relative"><canvas id="movementChart"></canvas></div>
-          </div>
+  <!-- 🌟 Row 1: KPI Cards (6 Gradient Columns with Neon Accents) -->
+  <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+    <!-- Total Products -->
+    <div class="tech-kpi bg-gradient-to-br from-blue-600 via-sky-600 to-indigo-700">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Total Products</span><i class="fa-solid fa-cube text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_totalProducts">0</div>
+      <div class="text-[9.5px] text-sky-100 flex items-center gap-1 font-medium">
+        <i class="fa-solid fa-arrow-up text-[8px]"></i><span>Active Catalog</span>
+      </div>
+    </div>
 
-          <div class="lg:col-span-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
-            <div class="flex items-center space-x-2 font-bold text-slate-800 text-xs mb-1"><i class="fa-solid fa-chart-pie text-sky-600"></i><span>Regional Store Distribution</span></div>
-            <div class="flex flex-col items-center justify-center my-auto">
-              <div class="w-36 h-36 relative flex items-center justify-center">
-                <canvas id="warehouseChart"></canvas>
-                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
-                  <span class="text-sm font-black text-slate-800 font-mono" id="centerStockCount">0</span><span class="text-[9px] text-slate-400">Total Units</span>
-                </div>
-              </div>
-              <div class="w-full mt-3 space-y-1.5 text-[11px]">
-                <div class="flex justify-between items-center text-slate-600">
-                  <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Office Bavet</span></span>
-                  <span class="font-bold font-mono text-slate-800" id="lblBavetStock">0</span>
-                </div>
-              </div>
-            </div>
-          </div>
+    <!-- Total Stock Units -->
+    <div class="tech-kpi bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Total Stock Units</span><i class="fa-solid fa-layer-group text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_totalStock">0</div>
+      <div class="text-[9.5px] text-emerald-100 flex items-center gap-1 font-medium">
+        <i class="fa-solid fa-check text-[8px]"></i><span>Active in Store</span>
+      </div>
+    </div>
 
-          <div class="lg:col-span-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-              <div class="flex items-center space-x-1.5 font-bold text-slate-800 text-xs"><i class="fa-solid fa-ranking-star text-sky-600"></i><span>Top Fast-Moving ONU &amp; Fiber</span></div>
-              <a href="javascript:switchView('products')" class="text-[11px] text-sky-600 hover:underline">View All →</a>
-            </div>
-            <div id="fastMovingContainer" class="space-y-2.5 overflow-y-auto max-h-60 pr-1 text-slate-700 text-xs font-mono">
-              <div class="text-slate-400 text-center py-6 font-sans">No stock out activity recorded yet.</div>
-            </div>
-          </div>
-        </div>
+    <!-- Stock In Today -->
+    <div class="tech-kpi bg-gradient-to-br from-cyan-600 via-teal-600 to-blue-700">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Stock In Today</span><i class="fa-solid fa-truck-ramp-box text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_stockInToday">0</div>
+      <div class="text-[9.5px] text-cyan-100 flex items-center gap-1 font-medium">
+        <i class="fa-solid fa-arrow-down text-[8px]"></i><span>Received Units</span>
+      </div>
+    </div>
 
-        <!-- Row 3: Navigation & Live Activity -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          <div class="lg:col-span-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2.5">
-              <span class="font-bold text-slate-800 text-xs">Quick Logistics Navigation</span>
-              <a href="javascript:switchView('report')" class="text-xs text-sky-600 hover:underline">Open Reports Hub →</a>
-            </div>
-            <div class="grid grid-cols-3 gap-2 text-center my-auto">
-              <div onclick="switchView('report'); switchReportTab('out');" class="p-2.5 rounded-xl bg-rose-50 border border-rose-100 cursor-pointer hover:bg-rose-100 transition">
-                <div class="w-7 h-7 mx-auto rounded-lg bg-rose-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-arrow-up"></i></div>
-                <div class="font-bold text-[10px] text-slate-700">Stock Out</div>
-              </div>
-              <div onclick="switchView('report'); switchReportTab('in');" class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-100 cursor-pointer hover:bg-emerald-100 transition">
-                <div class="w-7 h-7 mx-auto rounded-lg bg-emerald-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-arrow-down"></i></div>
-                <div class="font-bold text-[10px] text-slate-700">Stock In</div>
-              </div>
-              <div onclick="switchView('report'); switchReportTab('balance');" class="p-2.5 rounded-xl bg-sky-50 border border-sky-100 cursor-pointer hover:bg-sky-100 transition">
-                <div class="w-7 h-7 mx-auto rounded-lg bg-sky-600 text-white flex items-center justify-center text-[10px] mb-1 shadow-xs"><i class="fa-solid fa-scale-balanced"></i></div>
-                <div class="font-bold text-[10px] text-slate-700">Balance</div>
-              </div>
-            </div>
-            <div class="pt-3 border-t mt-2 flex justify-between items-center text-[11px] text-slate-500">
-              <span>Primary Gateway</span>
-              <span class="font-semibold text-emerald-600 font-mono">Office Bavet (Office -BVT)</span>
-            </div>
-          </div>
+    <!-- Stock Out Today -->
+    <div class="tech-kpi bg-gradient-to-br from-amber-600 via-orange-600 to-amber-700">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Stock Out Today</span><i class="fa-solid fa-person-digging text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_stockOutToday">0</div>
+      <div class="text-[9.5px] text-amber-100 flex items-center gap-1 font-medium">
+        <i class="fa-solid fa-arrow-up text-[8px]"></i><span>Installed Units</span>
+      </div>
+    </div>
 
-          <div class="lg:col-span-8 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-card flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-3">
-              <span class="font-bold text-slate-800 text-xs">Recent Hardware Movement (Live Logs)</span>
-              <a href="javascript:switchView('stockOutLogs')" class="text-[11px] text-sky-600 hover:underline">View Full Logs →</a>
-            </div>
-            <div id="dashboardRecentLogs" class="space-y-2 text-xs">
-              <div class="text-slate-400 text-center py-6 font-sans">No recent stock movements.</div>
-            </div>
-          </div>
+    <!-- Low Stock Flag -->
+    <div class="tech-kpi bg-gradient-to-br from-rose-600 via-rose-700 to-pink-800">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Low Stock Flag</span><i class="fa-solid fa-triangle-exclamation text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_lowStock">0</div>
+      <div class="text-[9.5px] text-rose-100 font-medium">Replenishment</div>
+    </div>
+
+    <!-- Faulty Returns -->
+    <div class="tech-kpi bg-gradient-to-br from-violet-600 via-indigo-700 to-purple-800">
+      <div class="flex items-center justify-between text-[11px] font-bold opacity-90">
+        <span>Faulty Returns</span><i class="fa-solid fa-circle-xmark text-white/80"></i>
+      </div>
+      <div class="my-1.5 text-2xl font-black font-mono tracking-tight text-white" id="kpi_brokenReturns">0</div>
+      <div class="text-[9.5px] text-violet-200 font-medium">Pending RMA/Repair</div>
+    </div>
+  </div>
+
+  <!-- 🌟 Row 2: Analytics Panels -->
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+    <!-- Chart 1: Stock Movement -->
+<div class="xl:col-span-6 tech-card p-4 flex flex-col justify-between">
+  <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+    <div class="flex items-center gap-2 font-bold text-xs text-white">
+      <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30"><i class="fa-solid fa-chart-column text-[10px]"></i></span>
+      <span>Stock Movement Velocity (Stock In vs Stock Out)</span>
+    </div>
+    <div class="flex items-center gap-3 text-[10px] text-slate-400 font-mono">
+      <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>Stock In</span>
+      <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-400 shadow-sm shadow-amber-400"></span>Stock Out</span>
+    </div>
+  </div>
+  <div class="h-56 relative"><canvas id="movementChart"></canvas></div>
+</div>
+
+<script>
+  // កំណត់ពណ៌អក្សរលំនាំដើមរបស់ Chart.js ឱ្យចេញពណ៌សភ្លឺទាំងអស់
+  if (window.Chart) {
+    Chart.defaults.color = '#e2e8f0'; // ពណ៌សភ្លឺច្បាស់លើគ្រប់ Labels/Ticks
+    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.08)'; // បន្ទាត់ក្រឡាស្រាលៗ
+  }
+</script>
+
+    <!-- Chart 2: Regional Distribution -->
+    <div class="xl:col-span-3 tech-card p-4 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2 border-b border-slate-800/80 pb-2">
+        <div class="flex items-center gap-2 font-bold text-xs text-white">
+          <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30"><i class="fa-solid fa-chart-pie text-[10px]"></i></span>
+          <span>Regional Store Distribution</span>
         </div>
       </div>
+      <div class="flex flex-col items-center justify-center my-auto">
+        <div class="w-36 h-36 relative flex items-center justify-center">
+          <canvas id="warehouseChart"></canvas>
+          <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center">
+            <span class="text-xl font-black text-white font-mono" id="centerStockCount">0</span>
+            <span class="text-[9px] text-slate-400 font-semibold uppercase">Total Units</span>
+          </div>
+        </div>
+        <div class="w-full mt-3 pt-2.5 border-t border-slate-800/80 flex justify-between items-center text-[11px]">
+          <span class="flex items-center gap-2 text-slate-300 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-sm shadow-emerald-400"></span>Office Bavet
+          </span>
+          <span class="font-bold font-mono text-emerald-400" id="lblBavetStock">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Fast-Moving Panel -->
+    <div class="xl:col-span-3 tech-card p-4 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-2 border-b border-slate-800/80 pb-2">
+        <div class="flex items-center gap-2 font-bold text-xs text-white">
+          <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30"><i class="fa-solid fa-ranking-star text-[10px]"></i></span>
+          <span>Top Fast-Moving ONU & Fiber</span>
+        </div>
+        <a href="javascript:switchView('products')" class="text-[10px] font-bold text-sky-400 hover:text-sky-300">View All →</a>
+      </div>
+      <div id="fastMovingContainer" class="tech-custom-scroll space-y-2 overflow-y-auto max-h-56 pr-1 text-xs font-mono">
+        <div class="text-slate-500 text-center py-8 font-sans">No stock out activity recorded yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🌟 Row 3: Quick Navigation & Live Logs Feed -->
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+    <!-- Quick Logistics Navigation -->
+    <div class="xl:col-span-4 tech-card p-4 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+        <span class="font-bold text-white text-xs flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30"><i class="fa-solid fa-compass text-[10px]"></i></span>
+          <span>Quick Logistics Navigation</span>
+        </span>
+        <a href="javascript:switchView('report')" class="text-[10px] font-bold text-sky-400 hover:text-sky-300">Reports Hub →</a>
+      </div>
+      
+      <div class="grid grid-cols-3 gap-2.5 my-auto">
+        <div onclick="switchView('report'); switchReportTab('out');" class="p-3 rounded-xl bg-slate-900/70 border border-rose-500/30 hover:border-rose-500 hover:bg-rose-950/30 cursor-pointer transition flex flex-col items-center">
+          <div class="w-8 h-8 rounded-lg bg-rose-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-md shadow-rose-600/40"><i class="fa-solid fa-arrow-up"></i></div>
+          <div class="font-bold text-[11px] text-white">Stock Out</div>
+        </div>
+        <div onclick="switchView('report'); switchReportTab('in');" class="p-3 rounded-xl bg-slate-900/70 border border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-950/30 cursor-pointer transition flex flex-col items-center">
+          <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-md shadow-emerald-600/40"><i class="fa-solid fa-arrow-down"></i></div>
+          <div class="font-bold text-[11px] text-white">Stock In</div>
+        </div>
+        <div onclick="switchView('report'); switchReportTab('balance');" class="p-3 rounded-xl bg-slate-900/70 border border-sky-500/30 hover:border-sky-500 hover:bg-sky-950/30 cursor-pointer transition flex flex-col items-center">
+          <div class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center text-xs mb-1.5 shadow-md shadow-sky-600/40"><i class="fa-solid fa-scale-balanced"></i></div>
+          <div class="font-bold text-[11px] text-white">Balance</div>
+        </div>
+      </div>
+
+      <div class="pt-3 mt-3 border-t border-slate-800/80 flex justify-between items-center text-[10px]">
+        <span class="text-slate-400">Primary Gateway</span>
+        <span class="font-bold text-emerald-400 font-mono bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-500/30">Office Bavet (Office - BVT)</span>
+      </div>
+    </div>
+
+    <!-- Recent Hardware Movement Feed -->
+    <div class="xl:col-span-8 tech-card p-4 flex flex-col justify-between">
+      <div class="flex items-center justify-between mb-3 border-b border-slate-800/80 pb-2">
+        <span class="font-bold text-white text-xs flex items-center gap-2">
+          <span class="w-6 h-6 rounded-lg bg-sky-500/20 text-sky-400 flex items-center justify-center border border-sky-500/30"><i class="fa-solid fa-clock-rotate-left text-[10px]"></i></span>
+          <span>Recent Hardware Movement (Live Logs)</span>
+        </span>
+        <a href="javascript:switchView('stockOutLogs')" class="text-[10px] font-bold text-sky-400 hover:text-sky-300">View Full Logs →</a>
+      </div>
+      <div id="dashboardRecentLogs" class="tech-custom-scroll space-y-2 text-xs overflow-y-auto max-h-56 pr-1">
+        <div class="text-slate-500 text-center py-8 font-sans">No recent stock movements.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
 
       <!-- ================= VIEW 2: REQUISITIONS ================= -->
       <div id="view-requisitions" class="hidden space-y-4">
@@ -579,7 +740,7 @@
             <div class="flex flex-wrap items-center gap-2">
               <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
                 <i class="fa-solid fa-calendar-days text-slate-500 ml-2"></i>
-                <input type="text" id="reportPeriodSelect" value="2026-09" placeholder="YYYY-MM or YYYY" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono outline-none shadow-xs text-sky-700 w-28 text-center focus:border-sky-500">
+                <input type="month" id="reportPeriodSelect" value="2026-09" class="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs font-bold font-mono outline-none shadow-xs text-sky-700 w-36 text-center focus:border-sky-500">
               </div>
               <button onclick="fetchCurrentReport()" class="bg-sky-600 hover:bg-sky-700 text-white px-3.5 py-2 rounded-xl font-bold shadow-xs transition flex items-center gap-1.5">
                 <i class="fa-solid fa-rotate text-xs"></i><span>Query</span>
@@ -1139,9 +1300,11 @@
       if (!isBranchManager) document.getElementById('nav-users').style.display = 'none';
       if (!isSuperAdmin) document.getElementById('btnNavAutoSetup').style.display = 'none';
 
+      // 🌟 Pre-load ទិន្នន័យទាំងអស់ទុកជាមុនតាំងពីពេល Login ចូលភ្លាម (រួមទាំង Master Ledger)
       loadDashboardLiveData();
       fetchLiveProducts();
       fetchRequisitions();
+      fetchMasterLedger(); // 👈 បន្ថែមទីនេះ ដើម្បីឱ្យទិន្នន័យ Ledger ផ្ទុកទុករួចជាស្រេចក្នុង Memory
       if(isBranchManager) fetchUsersList();
     }
 
@@ -1177,10 +1340,9 @@
       if(viewName === 'report') fetchCurrentReport();
       if(viewName === 'products') fetchLiveProducts();
       if(viewName === 'users') fetchUsersList();
-      if(viewName === 'masterLedger') fetchMasterLedger();
+      if(viewName === 'masterLedger') fetchMasterLedger(); // 👈 ពេលចុចចូលនឹងបង្ហាញចេញមកភ្លាមៗដោយរលូន
       if(viewName === 'requisitions') fetchRequisitions();
     }
-
     // ================= 🌟 LIVE DASHBOARD LOADER =================
     async function loadDashboardLiveData() {
       try {
@@ -1192,7 +1354,9 @@
 
         document.getElementById('kpi_totalProducts').innerText = (k.totalProducts || 0).toLocaleString();
         document.getElementById('kpi_totalStock').innerText = (k.totalStock || 0).toLocaleString();
-        document.getElementById('kpi_totalStockVal').innerText = k.totalStockValue || '$0';
+        // ⚠️ បន្ទាត់ kpi_totalStockVal ត្រូវលុប ឬខំមិនចេញ ព្រោះយើងបានលុបប្រអប់ Estimated Value ចោលហើយ
+        // document.getElementById('kpi_totalStockVal').innerText = k.totalStockValue || '$0';
+        
         document.getElementById('kpi_stockInToday').innerText = (k.stockInToday || 0).toLocaleString();
         document.getElementById('kpi_stockOutToday').innerText = (k.stockOutToday || 0).toLocaleString();
         document.getElementById('kpi_lowStock').innerText = (k.lowStock || 0).toLocaleString();
@@ -1235,15 +1399,20 @@
               else if (log.type === 'IN') { iconColor = 'bg-emerald-100 text-emerald-600'; icon = 'fa-arrow-down'; }
               else if (log.type === 'RETURN') { iconColor = 'bg-amber-100 text-amber-600'; icon = 'fa-rotate-left'; }
 
-              logHtml += `
-                <div class="flex items-start justify-between p-2 rounded-xl hover:bg-slate-50 transition border border-slate-100">
-                  <div class="flex items-center space-x-2.5">
-                    <div class="w-7 h-7 rounded-full ${iconColor} flex items-center justify-center text-xs shrink-0"><i class="fa-solid ${icon}"></i></div>
-                    <div><div class="font-semibold text-slate-800">${log.title}</div><div class="text-[10px] text-slate-500">${log.desc}</div></div>
-                  </div>
-                  <div class="text-right text-[10px] text-slate-400 font-mono">${log.time}<br><span class="text-slate-600 font-sans font-medium">${log.staff}</span></div>
-                </div>
-              `;
+             logHtml += `
+  <div class="flex items-start justify-between p-2.5 rounded-xl bg-[#07152b]/80 hover:bg-slate-800/80 transition border border-slate-800/90 hover:border-sky-500/40 shadow-xs">
+    <div class="flex items-center space-x-2.5 min-w-0">
+      <div class="w-7 h-7 rounded-lg ${iconColor} flex items-center justify-center text-xs shrink-0 shadow-sm"><i class="fa-solid ${icon}"></i></div>
+      <div class="truncate">
+        <div class="font-semibold text-slate-200 text-xs truncate">${log.title}</div>
+        <div class="text-[10px] text-slate-400 font-mono truncate">${log.desc}</div>
+      </div>
+    </div>
+    <div class="text-right text-[10px] text-slate-400 font-mono shrink-0 ml-2">
+      ${log.time}<br><span class="text-sky-400 font-sans font-medium">${log.staff}</span>
+    </div>
+  </div>
+`;
             });
             logBox.innerHTML = logHtml;
           }
@@ -1265,11 +1434,42 @@
           data: {
             labels: ['Today'],
             datasets: [
-              { label: 'Stock In', data: [inToday], backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.3 },
-              { label: 'Stock Out', data: [outToday], backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.3 }
+              { label: 'Stock In', data: [inToday || 0], backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.35 },
+              { label: 'Stock Out', data: [outToday || 0], backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.35 }
             ]
           },
-          options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: {
+                  color: 'rgba(255, 255, 255, 0.08)',
+                  borderColor: 'rgba(255, 255, 255, 0.15)'
+                },
+                ticks: {
+                  color: '#cbd5e1', // 🌟 លេខអ័ក្ស Y ពណ៌សភ្លឺច្បាស់
+                  font: {
+                    family: 'monospace',
+                    size: 11,
+                    weight: 'bold'
+                  }
+                }
+              },
+              x: {
+                grid: { display: false },
+                ticks: {
+                  color: '#f8fafc', // 🌟 អក្សរ Today ពណ៌សភ្លឺច្បាស់
+                  font: {
+                    size: 11,
+                    weight: 'bold'
+                  }
+                }
+              }
+            }
+          }
         });
       }
 
@@ -1280,13 +1480,21 @@
           type: 'doughnut',
           data: {
             labels: ['Office Bavet (Available)'],
-            datasets: [{ data: [totalStock || 1], backgroundColor: [totalStock > 0 ? '#10b981' : '#e2e8f0'], borderWidth: 0 }]
+            datasets: [{
+              data: [totalStock || 1],
+              backgroundColor: [totalStock > 0 ? '#10b981' : '#334155'],
+              borderWidth: 0
+            }]
           },
-          options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { display: false } } }
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '75%',
+            plugins: { legend: { display: false } }
+          }
         });
       }
     }
-
     // ================= 🌟 MULTI-REPORTS & EXCEL EXPORT CONTROLLER =================
     function switchReportTab(tab) {
       currentReportTab = tab;
@@ -1524,7 +1732,11 @@ json.stockOutList.forEach(r => {
     async function fetchMasterLedger() {
       const tbody = document.getElementById('masterLedgerBody');
       if (!tbody) return;
-      tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-sky-600 font-sans"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Available Hardware Assets in Stock...</td></tr>';
+      
+      // 🌟 បើក្នុង Memory មិនទាន់មានទិន្នន័យទើបបង្ហាញសញ្ញា Loading 
+      if (!activeInStockDevices || activeInStockDevices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-sky-600 font-sans"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Available Hardware Assets in Stock...</td></tr>';
+      }
 
       try {
         const res = await fetch(`${API_URL}?action=getMasterLedger`);
@@ -1533,7 +1745,9 @@ json.stockOutList.forEach(r => {
 
         renderLedgerTable();
       } catch(e) {
-        tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-rose-500 font-sans">Connection error!</td></tr>';
+        if (!activeInStockDevices || activeInStockDevices.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="p-6 text-center text-rose-500 font-sans">Connection error!</td></tr>';
+        }
       }
     }
 
