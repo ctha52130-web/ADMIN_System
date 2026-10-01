@@ -1132,6 +1132,69 @@
       </form>
     </div>
   </div>
+  <!-- ==================== 🌟 MODAL: SUPER ADMIN EDIT REQUISITION ==================== -->
+  <div id="modalSuperAdminEdit" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="modal-glass rounded-3xl p-6 w-full max-w-lg shadow-2xl border border-slate-100 my-8">
+      <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-user-shield text-amber-500"></i>
+          <span>Super Admin • កែប្រែទិន្នន័យ Requisition</span>
+        </h3>
+        <button onclick="closeModal('modalSuperAdminEdit')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSuperAdminSave(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="sa_edit_reqId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="font-semibold text-slate-700">Request ID</label>
+            <input type="text" id="sa_display_reqId" readonly class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-100 font-mono font-bold text-sky-700 outline-none">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">ឈ្មោះបុគ្គលិក (Staff Name)</label>
+            <input type="text" id="sa_edit_staffName" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-700">ឈ្មោះឧបករណ៍ (Product Description) *</label>
+          <input type="text" id="sa_edit_productName" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="font-semibold text-slate-700">ចំនួន (Qty) *</label>
+            <input type="number" id="sa_edit_qty" min="1" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 font-bold font-mono text-emerald-600 bg-slate-50 outline-none focus:bg-white">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">លេខ Ticket *</label>
+            <input type="text" id="sa_edit_ticket" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 font-bold font-mono text-indigo-600 bg-slate-50 outline-none focus:bg-white">
+          </div>
+          <div>
+            <label class="font-semibold text-slate-700">Status</label>
+            <select id="sa_edit_status" class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 font-bold text-slate-700 outline-none">
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Verified">Verified</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-semibold text-slate-700">Verified Serial / MAC Address</label>
+          <input type="text" id="sa_edit_verifiedSerial" placeholder="SN / MAC..." class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 font-mono text-slate-800 bg-slate-50 outline-none focus:bg-white">
+        </div>
+
+        <button type="submit" id="btnSaSave" class="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-xl font-bold transition shadow-lg shadow-amber-600/20 mt-2 flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-floppy-disk"></i>
+          <span>រក្សាទុកការកែប្រែ (Save Changes)</span>
+        </button>
+      </form>
+    </div>
+  </div>
 
   <!-- ==================== 4. JAVASCRIPT LOGIC ==================== -->
   <script>
@@ -2051,6 +2114,16 @@ json.stockOutList.forEach(r => {
             badge = '<span class="bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Verified ✅</span>';
           }
 
+          // 🌟 បន្ថែម៖ បើជា Super Admin គឺមានប៊ូតុង Edit ជានិច្ច
+          const isSuperAdmin = (currentUser && currentUser.role === 'Super Admin');
+          const editBtn = isSuperAdmin ? `
+            <button onclick="openSuperAdminEditModal('${q.reqId}', '${encodeURIComponent(q.staffName || '')}', '${encodeURIComponent(q.productName || '')}', '${q.qty || 1}', '${q.ticket || ''}', '${encodeURIComponent(q.verifiedSerial || '')}', '${q.status || 'Pending'}')" 
+              class="px-2 py-1 bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>Edit</span>
+            </button>
+          ` : '';
+
           html += `
             <tr class="hover:bg-slate-50 transition">
               <td class="p-3 font-mono font-bold text-sky-600">${q.reqId}</td>
@@ -2060,7 +2133,12 @@ json.stockOutList.forEach(r => {
               <td class="p-3 font-mono text-indigo-600 font-bold">${q.ticket}</td>
               <td class="p-3 text-center font-sans">${badge}</td>
               <td class="p-3 font-mono text-slate-600">${q.verifiedSerial || '<span class="text-amber-500 font-sans">Pending...</span>'}</td>
-              <td class="p-3 text-center font-sans">${actionBtn}</td>
+              <td class="p-3 text-center font-sans">
+                <div class="flex items-center justify-center gap-1.5">
+                  ${actionBtn}
+                  ${editBtn}
+                </div>
+              </td>
             </tr>
           `;
         });
@@ -2085,6 +2163,56 @@ json.stockOutList.forEach(r => {
       });
       fetchRequisitions();
     }
+
+    function openSuperAdminEditModal(reqId, encodedStaff, encodedProd, qty, ticket, encodedSerial, status) {
+      document.getElementById('sa_edit_reqId').value = reqId;
+      document.getElementById('sa_display_reqId').value = reqId;
+      document.getElementById('sa_edit_staffName').value = decodeURIComponent(encodedStaff);
+      document.getElementById('sa_edit_productName').value = decodeURIComponent(encodedProd);
+      document.getElementById('sa_edit_qty').value = qty;
+      document.getElementById('sa_edit_ticket').value = ticket;
+      document.getElementById('sa_edit_verifiedSerial').value = decodeURIComponent(encodedSerial);
+      document.getElementById('sa_edit_status').value = status || 'Approved';
+
+      document.getElementById('modalSuperAdminEdit').classList.remove('hidden');
+    }
+
+    async function handleSuperAdminSave(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaSave');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> កំពុងរក្សាទុក...';
+
+      const payload = {
+        action: 'superAdminUpdateRequisition',
+        reqId: document.getElementById('sa_edit_reqId').value,
+        staffName: document.getElementById('sa_edit_staffName').value.trim(),
+        productName: document.getElementById('sa_edit_productName').value.trim(),
+        qty: document.getElementById('sa_edit_qty').value,
+        ticket: document.getElementById('sa_edit_ticket').value.trim(),
+        verifiedSerial: document.getElementById('sa_edit_verifiedSerial').value.trim(),
+        status: document.getElementById('sa_edit_status').value
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        alert(json.message);
+        if (json.success) {
+          closeModal('modalSuperAdminEdit');
+          fetchRequisitions();
+        }
+      } catch(err) {
+        alert("កំហុសក្នុងការតភ្ជាប់ Server!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i><span>រក្សាទុកការកែប្រែ (Save Changes)</span>';
+      }
+    }
+
 
     async function openStockInModal() {
       document.getElementById('modalStockIn').classList.remove('hidden');
