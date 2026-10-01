@@ -1198,6 +1198,40 @@
     </div>
   </div>
 
+  <!-- ==================== 🌟 MODAL: REJECT REQUISITION ==================== -->
+<div id="modalRejectReq" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+  <div class="modal-glass rounded-3xl p-6 w-full max-w-md shadow-2xl border border-rose-100">
+    <div class="flex justify-between items-center pb-3 border-b border-slate-100 mb-4">
+      <h3 class="font-bold text-rose-600 text-sm flex items-center gap-2">
+        <i class="fa-solid fa-ban"></i>
+        <span>បដិសេធសំណើសុំ (Reject Requisition)</span>
+      </h3>
+      <button onclick="closeModal('modalRejectReq')" class="w-8 h-8 rounded-full bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <form onsubmit="handleRejectSubmit(event)" class="space-y-3.5 text-xs">
+      <input type="hidden" id="reject_reqId">
+
+      <div class="p-3 bg-rose-50/60 border border-rose-200 rounded-xl space-y-1">
+        <div class="text-slate-600">Request ID: <b id="reject_display_id" class="text-rose-700 font-mono"></b></div>
+        <div class="text-slate-600">សម្ភារៈ: <b id="reject_display_item" class="text-slate-800"></b></div>
+      </div>
+
+      <div>
+        <label class="font-semibold text-slate-700 block mb-1">មូលហេតុនៃការបដិសេធ (Reason for Rejection) *</label>
+        <textarea id="reject_reason" rows="3" required placeholder="ឧទាហរណ៍៖ អតិថិជនលុបចោល Ticket ឬ ស្នើសុំប្រភេទឧបករណ៍ខុស..." class="w-full border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-rose-500/30 font-medium"></textarea>
+      </div>
+
+      <button type="submit" id="btnConfirmReject" class="w-full py-2.5 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-700 hover:to-red-700 text-white rounded-xl font-bold shadow-md transition flex items-center justify-center gap-2">
+        <i class="fa-solid fa-ban"></i>
+        <span>បញ្ជាក់ការ Reject (Confirm Reject)</span>
+      </button>
+    </form>
+  </div>
+</div>
+
   <!-- ==================== 4. JAVASCRIPT LOGIC ==================== -->
   <script>
     const API_URL = "https://script.google.com/macros/s/AKfycbzE-QYFmG4E8wLHiE7sZ_xdiENHJYiLsilRfsErc7Rkj-3caHwd3UReRNOxzS408A/exec";
@@ -2103,20 +2137,29 @@ json.stockOutList.forEach(r => {
           let actionBtn = '-';
           const canApprove = (currentUser && (currentUser.role === 'Super Admin' || currentUser.role === 'Branch Manager' || currentUser.role === 'Deputy Manager'));
 
+          // 🌟 គ្រប់គ្រងស្ថានភាព Status នីមួយៗ និងប៊ូតុង Action
           if(q.status === 'Pending') {
             badge = '<span class="bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Pending Approval</span>';
             if(canApprove) {
-              actionBtn = `<button onclick="approveReq('${q.reqId}')" class="bg-sky-600 hover:bg-sky-700 text-white px-3 py-1 rounded-lg font-bold shadow-xs transition">Approve</button>`;
+              actionBtn = `
+                <div class="flex items-center gap-1.5">
+                  <button onclick="approveReq('${q.reqId}')" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded-lg font-bold shadow-xs transition">Approve</button>
+                  <button onclick="openRejectModal('${q.reqId}', '${encodeURIComponent(q.productName || '')}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg font-bold text-xs transition">Reject</button>
+                </div>
+              `;
             }
           } else if(q.status === 'Approved') {
             badge = `<span class="bg-sky-50 text-sky-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Approved (Ready)</span>`;
             pendingCount++;
             actionBtn = `<span class="text-slate-400 text-[10px] font-sans">Awaiting Mini App Submit</span>`;
+          } else if(q.status === 'Rejected') {
+            badge = '<span class="bg-rose-50 text-rose-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Rejected ❌</span>';
+            actionBtn = `<span class="text-slate-400 text-[10px] font-sans">Cancelled</span>`;
           } else {
             badge = '<span class="bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Verified ✅</span>';
           }
 
-          // 🌟 បន្ថែម៖ បើជា Super Admin គឺមានប៊ូតុង Edit ជានិច្ច
+          // 🌟 ប៊ូតុង Edit សម្រាប់តែ Super Admin ប៉ុណ្ណោះ
           const isSuperAdmin = (currentUser && currentUser.role === 'Super Admin');
           const editBtn = isSuperAdmin ? `
             <button onclick="openSuperAdminEditModal('${q.reqId}', '${encodeURIComponent(q.staffName || '')}', '${encodeURIComponent(q.productName || '')}', '${q.qty || 1}', '${q.ticket || ''}', '${encodeURIComponent(q.verifiedSerial || '')}', '${q.status || 'Pending'}')" 
@@ -2240,6 +2283,48 @@ json.stockOutList.forEach(r => {
       } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i><span>រក្សាទុកការកែប្រែ (Save Changes)</span>';
+      }
+    }
+
+    // ================= 🌟 REJECT REQUISITION FUNCTIONS =================
+    function openRejectModal(reqId, encodedProd) {
+      document.getElementById('reject_reqId').value = reqId;
+      document.getElementById('reject_display_id').innerText = reqId;
+      document.getElementById('reject_display_item').innerText = decodeURIComponent(encodedProd);
+      document.getElementById('reject_reason').value = '';
+      document.getElementById('modalRejectReq').classList.remove('hidden');
+    }
+
+    async function handleRejectSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnConfirmReject');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> កំពុងដំណើរការ...';
+
+      const payload = {
+        action: 'rejectRequisition',
+        reqId: document.getElementById('reject_reqId').value,
+        reason: document.getElementById('reject_reason').value.trim(),
+        rejectorName: currentUser.fullName,
+        rejectorRole: currentUser.role
+      };
+
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        alert(json.message);
+        if (json.success) {
+          closeModal('modalRejectReq');
+          fetchRequisitions();
+        }
+      } catch(err) {
+        alert("កំហុសក្នុងការតភ្ជាប់ Server!");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-ban"></i><span>បញ្ជាក់ការ Reject (Confirm Reject)</span>';
       }
     }
 
