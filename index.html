@@ -1160,9 +1160,11 @@
         </div>
 
         <div>
-          <label class="font-semibold text-slate-700">ឈ្មោះឧបករណ៍ (Product Description) *</label>
-          <input type="text" id="sa_edit_productName" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30">
-        </div>
+        <label class="font-semibold text-slate-700">ឈ្មោះឧបករណ៍ (Product Description) *</label>
+        <select id="sa_edit_productName" required class="w-full mt-1.5 border border-slate-200 rounded-xl p-2.5 bg-slate-50 text-slate-800 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/30 font-medium">
+          <option value="">-- ជ្រើសរើសមុខទំនិញ (Select Product) --</option>
+        </select>
+      </div>
 
         <div class="grid grid-cols-3 gap-3">
           <div>
@@ -2168,7 +2170,30 @@ json.stockOutList.forEach(r => {
       document.getElementById('sa_edit_reqId').value = reqId;
       document.getElementById('sa_display_reqId').value = reqId;
       document.getElementById('sa_edit_staffName').value = decodeURIComponent(encodedStaff);
-      document.getElementById('sa_edit_productName').value = decodeURIComponent(encodedProd);
+      
+      const prodName = decodeURIComponent(encodedProd);
+      const prodSelect = document.getElementById('sa_edit_productName');
+
+      // 🌟 ១. បង្កើត Options ក្នុង Dropdown ដោយទាញពីបញ្ជីទំនិញក្នុងស្តុក (productDatabase)
+      prodSelect.innerHTML = '<option value="">-- ជ្រើសរើសមុខទំនិញ (Select Product) --</option>';
+      for (let p in productDatabase) {
+        const opt = document.createElement('option');
+        opt.value = p;
+        opt.textContent = `${p} [${productDatabase[p].code || ''}]`;
+        prodSelect.appendChild(opt);
+      }
+
+      // បើសិនឈ្មោះឧបករណ៍ដើមមិនទាន់មានក្នុង catalog ឱ្យបន្ថែមវាចូលជា Option មួយកុំឱ្យបាត់
+      if (prodName && !productDatabase[prodName]) {
+        const extraOpt = document.createElement('option');
+        extraOpt.value = prodName;
+        extraOpt.textContent = prodName;
+        prodSelect.appendChild(extraOpt);
+      }
+
+      // កំណត់ជ្រើសរើសយកតម្លៃដែលបានស្នើសុំដើម
+      prodSelect.value = prodName;
+
       document.getElementById('sa_edit_qty').value = qty;
       document.getElementById('sa_edit_ticket').value = ticket;
       document.getElementById('sa_edit_verifiedSerial').value = decodeURIComponent(encodedSerial);
@@ -2183,11 +2208,16 @@ json.stockOutList.forEach(r => {
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> កំពុងរក្សាទុក...';
 
+      const selectedProd = document.getElementById('sa_edit_productName').value.trim();
+      // 🌟 ចាប់យក Item Code ថ្មីទៅតាមទំនិញដែលបានជ្រើសរើស (បើមាន)
+      const matchedCode = productDatabase[selectedProd] ? productDatabase[selectedProd].code : '';
+
       const payload = {
         action: 'superAdminUpdateRequisition',
         reqId: document.getElementById('sa_edit_reqId').value,
         staffName: document.getElementById('sa_edit_staffName').value.trim(),
-        productName: document.getElementById('sa_edit_productName').value.trim(),
+        productName: selectedProd,
+        itemCode: matchedCode,
         qty: document.getElementById('sa_edit_qty').value,
         ticket: document.getElementById('sa_edit_ticket').value.trim(),
         verifiedSerial: document.getElementById('sa_edit_verifiedSerial').value.trim(),
