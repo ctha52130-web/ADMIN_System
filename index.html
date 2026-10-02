@@ -576,37 +576,122 @@
 
 </div>
 
-      <!-- ================= VIEW 2: REQUISITIONS ================= -->
+      <!-- ================= VIEW 2: REQUISITIONS (MODERN ENTERPRISE UI) ================= -->
       <div id="view-requisitions" class="hidden space-y-4">
-        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-card flex justify-between items-center">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <i class="fa-solid fa-clipboard-check text-amber-600"></i>
-              <span>Hardware Requisition &amp; Verification Queue</span>
-            </h2>
-            <p class="text-slate-500 text-xs">Staff requests dispatched via Telegram Mini App requiring clearance</p>
+        
+        <!-- 🌟 ១. KPI METRICS CARDS FOR REQUISITION -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div class="bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700/60 p-3.5 rounded-2xl shadow-sm text-white flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Total In Queue</div>
+              <div class="text-xl font-black font-mono mt-0.5 text-white" id="reqStatTotal">0</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-slate-700/50 text-slate-300 flex items-center justify-center text-sm border border-slate-600/40">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
           </div>
-          <button onclick="fetchRequisitions()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl font-medium shadow-xs transition">
-            <i class="fa-solid fa-rotate text-xs mr-1"></i> Refresh Queue
-          </button>
+
+          <div class="bg-gradient-to-br from-sky-950/80 to-blue-900/60 border border-sky-500/30 p-3.5 rounded-2xl shadow-sm text-white flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-sky-300 font-semibold uppercase tracking-wider">Awaiting Submit</div>
+              <div class="text-xl font-black font-mono mt-0.5 text-sky-400" id="reqStatApproved">0</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center text-sm border border-sky-500/30">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-amber-950/80 to-yellow-900/60 border border-amber-500/30 p-3.5 rounded-2xl shadow-sm text-white flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-amber-300 font-semibold uppercase tracking-wider">Pending Approval</div>
+              <div class="text-xl font-black font-mono mt-0.5 text-amber-400" id="reqStatPending">0</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm border border-amber-500/30">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-emerald-950/80 to-teal-900/60 border border-emerald-500/30 p-3.5 rounded-2xl shadow-sm text-white flex items-center justify-between">
+            <div>
+              <div class="text-[10px] text-emerald-300 font-semibold uppercase tracking-wider">Verified Stock Out</div>
+              <div class="text-xl font-black font-mono mt-0.5 text-emerald-400" id="reqStatVerified">0</div>
+            </div>
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-sm border border-emerald-500/30">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+          </div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-card overflow-hidden">
-          <table class="w-full text-left text-xs border-collapse">
-            <thead class="bg-slate-50 border-b text-slate-600 font-semibold">
-              <tr>
-                <th class="p-3">Request ID</th>
-                <th class="p-3">Staff Member</th>
-                <th class="p-3">Item Description</th>
-                <th class="p-3 text-center">Qty</th>
-                <th class="p-3">Ticket ID</th>
-                <th class="p-3 text-center">Status</th>
-                <th class="p-3">Verified Serial / MAC</th>
-                <th class="p-3 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody id="requisitionTableBody" class="divide-y divide-slate-100 font-medium"></tbody>
-          </table>
+
+        <!-- 🌟 ២. MODERN TOOLBAR & FILTER CONTROLS -->
+        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-500 text-white flex items-center justify-center shadow-md shadow-sky-500/20">
+              <i class="fa-solid fa-clipboard-check text-base"></i>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900 tracking-tight">Hardware Requisition &amp; Verification Hub</h2>
+              <p class="text-[11px] text-slate-500">Live clearance queue &amp; technician field dispatch ledger</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Search Quick Filter -->
+            <div class="relative">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+              <input type="text" id="reqSearchInput" onkeyup="renderFilteredRequisitions()" placeholder="Search Item, Ticket..." class="pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/20 w-44 font-medium transition">
+            </div>
+
+            <!-- Staff Dropdown -->
+            <div class="relative">
+              <select id="filterStaffSelect" onchange="renderFilteredRequisitions()" class="text-xs border border-slate-200 rounded-xl pl-3 pr-7 py-1.5 bg-slate-50 text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/20 font-semibold shadow-xs appearance-none cursor-pointer">
+                <option value="">👤 បុគ្គលិកទាំងអស់ (All Staff)</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-2.5 top-2.5 text-[10px] text-slate-400 pointer-events-none"></i>
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="relative">
+              <select id="filterStatusSelect" onchange="renderFilteredRequisitions()" class="text-xs border border-slate-200 rounded-xl pl-3 pr-7 py-1.5 bg-slate-50 text-slate-700 outline-none focus:bg-white focus:ring-2 focus:ring-sky-500/20 font-semibold shadow-xs appearance-none cursor-pointer">
+                <option value="">⚡ ស្ថានភាពទាំងអស់ (All Status)</option>
+                <option value="Approved">⏳ Awaiting Submit (Approved)</option>
+                <option value="Pending">🟡 Pending Approval</option>
+                <option value="Verified">✅ Completed (Verified)</option>
+                <option value="Rejected">❌ Rejected</option>
+              </select>
+              <i class="fa-solid fa-chevron-down absolute right-2.5 top-2.5 text-[10px] text-slate-400 pointer-events-none"></i>
+            </div>
+
+            <!-- Refresh Button -->
+            <button onclick="fetchRequisitions()" class="bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-bold px-3.5 py-1.5 rounded-xl text-xs shadow-sm shadow-sky-600/20 transition flex items-center gap-1.5">
+              <i class="fa-solid fa-rotate text-xs"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
         </div>
+
+        <!-- 🌟 ៣. DATA TABLE WITH MODERN ACCENTS -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr class="bg-slate-50/80 border-b border-slate-200/80 text-slate-600 uppercase text-[10px] font-bold tracking-wider">
+                  <th class="py-3 px-3.5">Request ID</th>
+                  <th class="py-3 px-3.5">Staff Member</th>
+                  <th class="py-3 px-3.5">Equipment / Item Description</th>
+                  <th class="py-3 px-3.5 text-center">Qty</th>
+                  <th class="py-3 px-3.5">Ticket ID</th>
+                  <th class="py-3 px-3.5 text-center">Status</th>
+                  <th class="py-3 px-3.5">Verified Serial / MAC</th>
+                  <th class="py-3 px-3.5 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="requisitionTableBody" class="divide-y divide-slate-100 font-medium">
+                <tr><td colspan="8" class="p-8 text-center text-slate-400 font-sans">Loading queue data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
 
       <!-- ================= VIEW 3: PRODUCTS ================= -->
@@ -2121,6 +2206,9 @@ json.stockOutList.forEach(r => {
       fetchUsersList();
     }
 
+    // 🌟 អថេរសកលសម្រាប់ផ្ទុកទិន្នន័យ Requisitions យកទៅ Filter និង Sort
+    let rawRequisitionsQueue = [];
+
     async function fetchRequisitions() {
       const tbody = document.getElementById('requisitionTableBody');
       if(!tbody) return;
@@ -2128,71 +2216,203 @@ json.stockOutList.forEach(r => {
       try {
         const res = await fetch(`${API_URL}?action=getRequisitions`);
         const json = await res.json();
-        const queueData = json.queue || [];
-        let pendingCount = 0;
-        let html = '';
+        rawRequisitionsQueue = json.queue || [];
         
-        queueData.forEach(q => {
-          let badge = '';
-          let actionBtn = '-';
-          const canApprove = (currentUser && (currentUser.role === 'Super Admin' || currentUser.role === 'Branch Manager' || currentUser.role === 'Deputy Manager'));
+        // ១. បញ្ចូលឈ្មោះបុគ្គលិកទាំងអស់ចូលក្នុង Dropdown Filter
+        populateStaffDropdown(rawRequisitionsQueue);
 
-          // 🌟 គ្រប់គ្រងស្ថានភាព Status នីមួយៗ និងប៊ូតុង Action
-          if(q.status === 'Pending') {
-            badge = '<span class="bg-amber-50 text-amber-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Pending Approval</span>';
-            if(canApprove) {
-              actionBtn = `
-                <div class="flex items-center gap-1.5">
-                  <button onclick="approveReq('${q.reqId}')" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded-lg font-bold shadow-xs transition">Approve</button>
-                  <button onclick="openRejectModal('${q.reqId}', '${encodeURIComponent(q.productName || '')}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg font-bold text-xs transition">Reject</button>
-                </div>
-              `;
-            }
-          } else if(q.status === 'Approved') {
-            badge = `<span class="bg-sky-50 text-sky-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Approved (Ready)</span>`;
-            pendingCount++;
-            actionBtn = `<span class="text-slate-400 text-[10px] font-sans">Awaiting Mini App Submit</span>`;
-          } else if(q.status === 'Rejected') {
-            badge = '<span class="bg-rose-50 text-rose-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Rejected ❌</span>';
-            actionBtn = `<span class="text-slate-400 text-[10px] font-sans">Cancelled</span>`;
-          } else {
-            badge = '<span class="bg-emerald-50 text-emerald-600 px-2.5 py-0.5 rounded-full font-bold text-[10px]">Verified ✅</span>';
-          }
+        // ២. បង្ហាញទិន្នន័យលើតារាងតាមលំដាប់តម្រៀប (Verified ធ្លាក់ទៅក្រោមគេ)
+        renderFilteredRequisitions();
 
-          // 🌟 ប៊ូតុង Edit សម្រាប់តែ Super Admin ប៉ុណ្ណោះ
-          const isSuperAdmin = (currentUser && currentUser.role === 'Super Admin');
-          const editBtn = isSuperAdmin ? `
-            <button onclick="openSuperAdminEditModal('${q.reqId}', '${encodeURIComponent(q.staffName || '')}', '${encodeURIComponent(q.productName || '')}', '${q.qty || 1}', '${q.ticket || ''}', '${encodeURIComponent(q.verifiedSerial || '')}', '${q.status || 'Pending'}')" 
-              class="px-2 py-1 bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-300 rounded-lg text-xs font-bold transition flex items-center gap-1">
-              <i class="fa-solid fa-pen-to-square"></i>
-              <span>Edit</span>
-            </button>
-          ` : '';
-
-          html += `
-            <tr class="hover:bg-slate-50 transition">
-              <td class="p-3 font-mono font-bold text-sky-600">${q.reqId}</td>
-              <td class="p-3 font-semibold text-slate-800">${q.staffName} (${q.staffId})</td>
-              <td class="p-3 font-sans font-semibold">${q.productName}</td>
-              <td class="p-3 text-center font-bold font-mono text-emerald-600">${q.qty} ${q.uom || ''}</td>
-              <td class="p-3 font-mono text-indigo-600 font-bold">${q.ticket}</td>
-              <td class="p-3 text-center font-sans">${badge}</td>
-              <td class="p-3 font-mono text-slate-600">${q.verifiedSerial || '<span class="text-amber-500 font-sans">Pending...</span>'}</td>
-              <td class="p-3 text-center font-sans">
-                <div class="flex items-center justify-center gap-1.5">
-                  ${actionBtn}
-                  ${editBtn}
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-        tbody.innerHTML = html || '<tr><td colspan="8" class="p-6 text-center text-slate-400">No requisition requests found.</td></tr>';
-        const badgeEl = document.getElementById('badgePendingReq');
-        if(badgeEl) badgeEl.innerText = pendingCount;
       } catch(e) {
-        tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-slate-400">No requisition requests found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="p-6 text-center text-slate-400">Failed to load requisition requests.</td></tr>';
       }
+    }
+
+    // 🌟 មុខងារទាញយកឈ្មោះបុគ្គលិកមិនស្ទួនដាក់ក្នុង Dropdown (Safe String)
+    function populateStaffDropdown(dataList) {
+      const staffSelect = document.getElementById('filterStaffSelect');
+      if (!staffSelect) return;
+      
+      const currentSelected = staffSelect.value;
+      const staffSet = new Set();
+
+      dataList.forEach(q => {
+        const name = (q.staffName ? q.staffName.toString() : '').trim();
+        const id = (q.staffId !== undefined && q.staffId !== null ? q.staffId.toString() : '').trim();
+        if (name) {
+          staffSet.add(`${name}${id ? ' (' + id + ')' : ''}`);
+        }
+      });
+
+      let optionsHtml = '<option value="">-- បុគ្គលិកទាំងអស់ (All Staff) --</option>';
+      Array.from(staffSet).sort().forEach(staff => {
+        optionsHtml += `<option value="${staff}">${staff}</option>`;
+      });
+
+      staffSelect.innerHTML = optionsHtml;
+      staffSelect.value = currentSelected;
+    }
+
+    // 🌟 មុខងារ Filter តាមឈ្មោះបុគ្គលិក/ស្ថានភាព និងរៀបចំឱ្យ Verified ធ្លាក់ទៅក្រោមគេ (MODERN ENTERPRISE UI)
+    function renderFilteredRequisitions() {
+      const tbody = document.getElementById('requisitionTableBody');
+      if(!tbody) return;
+
+      const searchKw = (document.getElementById('reqSearchInput')?.value || '').trim().toLowerCase();
+      const staffFilter = (document.getElementById('filterStaffSelect')?.value || '').trim();
+      const statusFilter = (document.getElementById('filterStatusSelect')?.value || '').trim();
+
+      // ១. គណនាស្ថិតិ KPI សង្ខេបសម្រាប់ Cards ខាងលើ
+      let countTotal = rawRequisitionsQueue.length;
+      let countApproved = 0;
+      let countPending = 0;
+      let countVerified = 0;
+
+      rawRequisitionsQueue.forEach(q => {
+        if(q.status === 'Approved') countApproved++;
+        else if(q.status === 'Pending') countPending++;
+        else if(q.status === 'Verified') countVerified++;
+      });
+
+      if(document.getElementById('reqStatTotal')) document.getElementById('reqStatTotal').innerText = countTotal;
+      if(document.getElementById('reqStatApproved')) document.getElementById('reqStatApproved').innerText = countApproved;
+      if(document.getElementById('reqStatPending')) document.getElementById('reqStatPending').innerText = countPending;
+      if(document.getElementById('reqStatVerified')) document.getElementById('reqStatVerified').innerText = countVerified;
+      if(document.getElementById('badgePendingReq')) document.getElementById('badgePendingReq').innerText = countApproved;
+
+      // ២. Filter ទិន្នន័យតាម Search, Staff Name, និង Status
+      let list = rawRequisitionsQueue.filter(q => {
+        const sName = (q.staffName ? q.staffName.toString() : '').trim();
+        const sId = (q.staffId !== undefined && q.staffId !== null ? q.staffId.toString() : '').trim();
+        const staffKey = `${sName}${sId ? ' (' + sId + ')' : ''}`;
+        const pName = (q.productName || '').toString().toLowerCase();
+        const ticket = (q.ticket || '').toString().toLowerCase();
+        const reqId = (q.reqId || '').toString().toLowerCase();
+
+        const matchSearch = !searchKw || pName.includes(searchKw) || ticket.includes(searchKw) || reqId.includes(searchKw);
+        const matchStaff = !staffFilter || staffKey === staffFilter || sName.includes(staffFilter);
+        const matchStatus = !statusFilter || q.status === statusFilter;
+
+        return matchSearch && matchStaff && matchStatus;
+      });
+
+      // ៣. តម្រៀបលំដាប់ Priority (Verified និង Rejected ធ្លាក់ទៅក្រោមគេបង្អស់)
+      list.sort((a, b) => {
+        function getPriority(status) {
+          if (status === 'Approved') return 1; // នៅលើគេបង្អស់ (ត្រៀមដំឡើង)
+          if (status === 'Pending') return 2;  // រង់ចាំការអនុម័ត
+          if (status === 'Verified') return 3; // ✅ រួចរាល់ ធ្លាក់ទៅក្រោម
+          if (status === 'Rejected') return 4; // ❌ Cancel ធ្លាក់ក្រោមបង្អស់
+          return 5;
+        }
+        return getPriority(a.status) - getPriority(b.status);
+      });
+
+      let html = '';
+
+      list.forEach(q => {
+        let badge = '';
+        let actionBtn = '<span class="text-slate-300">-</span>';
+        const canApprove = (currentUser && (currentUser.role === 'Super Admin' || currentUser.role === 'Branch Manager' || currentUser.role === 'Deputy Manager'));
+
+        if(q.status === 'Pending') {
+          badge = `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              Pending Approval
+            </span>
+          `;
+          if(canApprove) {
+            actionBtn = `
+              <div class="flex items-center justify-center gap-1.5">
+                <button onclick="approveReq('${q.reqId}')" class="bg-sky-600 hover:bg-sky-700 text-white px-2.5 py-1 rounded-lg font-bold shadow-xs transition text-xs flex items-center gap-1">
+                  <i class="fa-solid fa-check text-[10px]"></i> Approve
+                </button>
+                <button onclick="openRejectModal('${q.reqId}', '${encodeURIComponent(q.productName || '')}')" class="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg font-bold text-xs transition">
+                  Reject
+                </button>
+              </div>
+            `;
+          }
+        } else if(q.status === 'Approved') {
+          badge = `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-sky-500/10 text-sky-600 border border-sky-500/20 shadow-xs">
+              <span class="w-1.5 h-1.5 rounded-full bg-sky-500"></span>
+              Approved (Ready)
+            </span>
+          `;
+          actionBtn = `<span class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 border border-amber-200 font-bold text-[10px]">Awaiting Submit</span>`;
+        } else if(q.status === 'Rejected') {
+          badge = `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-500/10 text-rose-600 border border-rose-500/20">
+              <i class="fa-solid fa-xmark text-[9px]"></i> Rejected
+            </span>
+          `;
+          actionBtn = `<span class="text-slate-400 text-[10px]">Cancelled</span>`;
+        } else {
+          // Verified
+          badge = `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+              <i class="fa-solid fa-check text-[9px]"></i> Verified
+            </span>
+          `;
+        }
+
+        const isSuperAdmin = (currentUser && currentUser.role === 'Super Admin');
+        const sNameSafe = (q.staffName ? q.staffName.toString() : '').trim();
+        const sIdSafe = (q.staffId !== undefined && q.staffId !== null ? q.staffId.toString() : '').trim();
+
+        // Avatar អក្សរកាត់សម្រាប់បុគ្គលិក
+        let initials = sNameSafe.split(' ').map(n => n[0]).join('').slice(-2).toUpperCase() || 'ST';
+
+        const editBtn = isSuperAdmin ? `
+          <button onclick="openSuperAdminEditModal('${q.reqId}', '${encodeURIComponent(sNameSafe)}', '${encodeURIComponent(q.productName || '')}', '${q.qty || 1}', '${q.ticket || ''}', '${encodeURIComponent(q.verifiedSerial || '')}', '${q.status || 'Pending'}')" 
+            class="p-1.5 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition" title="Edit Request">
+            <i class="fa-solid fa-pen-to-square text-xs"></i>
+          </button>
+        ` : '';
+
+        const rowBg = q.status === 'Verified' ? 'bg-slate-50/40 text-slate-500' : 'hover:bg-slate-50/80 text-slate-800';
+
+        html += `
+          <tr class="${rowBg} transition border-b border-slate-100">
+            <td class="py-3 px-3.5 font-mono font-bold text-sky-600 text-xs whitespace-nowrap">
+              <span class="bg-sky-50 text-sky-700 px-2 py-0.5 rounded-md border border-sky-100">${q.reqId}</span>
+            </td>
+            <td class="py-3 px-3.5">
+              <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-full bg-slate-100 text-slate-600 font-bold text-[9px] flex items-center justify-center shrink-0 border border-slate-200">
+                  ${initials}
+                </div>
+                <div class="truncate">
+                  <div class="font-bold text-slate-800 text-xs truncate">${sNameSafe}</div>
+                  <div class="text-[10px] text-slate-400 font-mono">ID: ${sIdSafe || 'N/A'}</div>
+                </div>
+              </div>
+            </td>
+            <td class="py-3 px-3.5 font-sans font-semibold text-xs text-slate-800">${q.productName || '-'}</td>
+            <td class="py-3 px-3.5 text-center font-bold font-mono text-emerald-600 text-xs whitespace-nowrap">
+              <span class="bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">${q.qty} ${q.uom || ''}</span>
+            </td>
+            <td class="py-3 px-3.5 font-mono text-indigo-600 font-bold text-xs whitespace-nowrap">
+              ${q.ticket && q.ticket !== 'N/A' ? `<span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-100">#${q.ticket}</span>` : '<span class="text-slate-400 font-normal">N/A</span>'}
+            </td>
+            <td class="py-3 px-3.5 text-center font-sans whitespace-nowrap">${badge}</td>
+            <td class="py-3 px-3.5 font-mono text-slate-600 text-xs">
+              ${q.verifiedSerial ? `<span class="text-slate-700 font-semibold">${q.verifiedSerial}</span>` : '<span class="text-amber-500 font-sans italic text-[11px]">Pending submission</span>'}
+            </td>
+            <td class="py-3 px-3.5 text-center font-sans whitespace-nowrap">
+              <div class="flex items-center justify-center gap-1.5">
+                ${actionBtn}
+                ${editBtn}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html || '<tr><td colspan="8" class="p-8 text-center text-slate-400 font-sans">No requisition requests matched.</td></tr>';
     }
 
     async function approveReq(reqId) {
@@ -2217,7 +2437,7 @@ json.stockOutList.forEach(r => {
       const prodName = decodeURIComponent(encodedProd);
       const prodSelect = document.getElementById('sa_edit_productName');
 
-      // 🌟 ១. បង្កើត Options ក្នុង Dropdown ដោយទាញពីបញ្ជីទំនិញក្នុងស្តុក (productDatabase)
+      // ១. បង្កើត Options ក្នុង Dropdown ដោយទាញពីបញ្ជីទំនិញក្នុងស្តុក (productDatabase)
       prodSelect.innerHTML = '<option value="">-- ជ្រើសរើសមុខទំនិញ (Select Product) --</option>';
       for (let p in productDatabase) {
         const opt = document.createElement('option');
@@ -2252,7 +2472,7 @@ json.stockOutList.forEach(r => {
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> កំពុងរក្សាទុក...';
 
       const selectedProd = document.getElementById('sa_edit_productName').value.trim();
-      // 🌟 ចាប់យក Item Code ថ្មីទៅតាមទំនិញដែលបានជ្រើសរើស (បើមាន)
+      // ចាប់យក Item Code ថ្មីទៅតាមទំនិញដែលបានជ្រើសរើស (បើមាន)
       const matchedCode = productDatabase[selectedProd] ? productDatabase[selectedProd].code : '';
 
       const payload = {
